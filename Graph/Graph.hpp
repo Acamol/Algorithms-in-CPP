@@ -1,10 +1,10 @@
 /*
-A General (directed) graph represented with adjacency list. Each vertex is
-identified with a unique integer and can hold a data.
+  A General (directed) graph represented with adjacency list. Each vertex is
+  identified with a unique integer and can hold a data.
 
-This is by no means a complete data structure. Only the most basic
-operations are implemented, and only those I use in my algorithm
-implemantations.
+  This is by no means a complete data structure. Only the most basic
+  operations are implemented, and only those I use in my algorithm
+  implemantations.
 */
 
 #ifndef __GRAPH_HPP__
@@ -60,7 +60,7 @@ public:
 	}
 
 	/*
-	Complexity: O(V+E)
+	  Complexity: O(V+E)
 	*/
 	Graph(const Graph& g) {
 		if (this != &g) {
@@ -78,7 +78,7 @@ public:
 	}
 
 	/*
-	Complexity: O(V+E)
+	  Complexity: O(V+E)
 	*/
 	Graph& operator=(const Graph& g) {
 		if (this != &g) {
@@ -95,7 +95,7 @@ public:
 	}
 
 	/*
-	Complexity: constant
+	  Complexity: constant
 	*/
 	void addVertex(int name, const T& data) {
 		if (!contains(name)) {
@@ -107,7 +107,7 @@ public:
 	}
 
 	/*
-	Complexity: constant
+  	Complexity: constant
 	*/
 	void addEdge(int name1, int name2) {
 		if (contains(name1) && contains(name2)) {
@@ -122,7 +122,7 @@ public:
 	}
 
 	/*
-	Complexity: constant
+	  Complexity: constant
 	*/
 	const Vertex<T>& getVertex(int name) const {
 		if (!contains(name)) {
@@ -133,9 +133,9 @@ public:
 	}
 
 	/*
-	Returns true if a vertex with identifier 'name' exists, and false otherwise.
+	  Returns true if a vertex with identifier 'name' exists, and false otherwise.
 
-	Complexity: constant
+	  Complexity: constant
 	*/
 	bool contains(int name) const {
 		return (vertices.find(name) != vertices.end());
@@ -150,15 +150,15 @@ public:
 	}
 
 	/*
-	Used to iterate over vertices in the graph. There is no specific order.
-	Value cannot be changed through an iterator (like const_iterator).
+	  Used to iterate over vertices in the graph. There is no specific order.
+	  Value cannot be changed through an iterator (like const_iterator).
 
-	Example:
-	Graph<int> g;
-	... adding some vertices ...
-	for (auto& v : g) {
-	std::cout << v.getData() << "\n";
-	}
+	  Example:
+	     Graph<int> g;
+	     ... adding some vertices ...
+	     for (auto& v : g) {
+	     std::cout << v.getData() << "\n";
+	    }
 	*/
 	class Iterator {
 	private:
