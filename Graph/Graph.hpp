@@ -1,5 +1,5 @@
 /*
-  A General (directed) graph represented with adjacency list. Each vertex is
+  A generic (directed) graph represented with adjacency list. Each vertex is
   identified with a unique integer and can hold a data.
 
   This is by no means a complete data structure. Only the most basic
