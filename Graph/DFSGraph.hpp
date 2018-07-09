@@ -8,7 +8,7 @@
 
 template<class T>
 class DFSGraph : public Graph<T> {
-public:
+ public:
   typedef std::unique_ptr<DFSGraph<T>> DFSTreePtr;
 
   /*

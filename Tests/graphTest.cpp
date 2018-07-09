@@ -34,7 +34,7 @@ namespace {
   };
 
   class compareBob {
-  public:
+   public:
     bool operator()(const struct bob& b1, const struct bob& b2) {
       return b1.a < b2.a;
     }

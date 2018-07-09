@@ -15,12 +15,7 @@
 
 template<class T>
 class Vertex {
-private:
-  std::list<Vertex<T>*> neighbours;
-  int name;
-  T data;
-
-public:
+ public:
   typedef std::list<Vertex<T>*> NeighboursList;
 
   Vertex() {
@@ -44,19 +39,17 @@ public:
   const NeighboursList& getNeighbours() const {
     return neighbours;
   }
+
+ private:
+  std::list<Vertex<T>*> neighbours;
+  int name;
+  T data;
 };
 
 template<class T>
 class Graph {
-private:
-  size_t numEdges;
-
-protected:
-  typedef std::unordered_map<int, Vertex<T>> vMap;
-  vMap vertices;
-
-public:
-  Graph() : numEdges(0), vertices() {
+ public:
+  explicit Graph() : numEdges(0), vertices() {
   }
 
   /*
@@ -161,16 +154,7 @@ public:
       }
   */
   class Iterator {
-  private:
-    friend class Graph<T>; // so Graph<T> will be able to call c'tor
-    const Graph<T> * graph;
-    typename vMap::iterator it;
-
-    Iterator(const Graph<T> * graph, typename vMap::iterator it)
-      : graph(graph), it(it) {
-    }
-
-  public:
+   public:
     Iterator & operator++() {
       ++it;
       return *this;
@@ -188,6 +172,14 @@ public:
     const Vertex<T>& operator*() const {
       return it->second;
     }
+   private:
+    friend class Graph<T>; // so Graph<T> will be able to call c'tor
+    const Graph<T> * graph;
+    typename vMap::iterator it;
+
+    Iterator(const Graph<T> * graph, typename vMap::iterator it)
+      : graph(graph), it(it) {
+    }
   };
 
   Iterator begin() {
@@ -197,6 +189,13 @@ public:
   Iterator end() {
     return Iterator(this, vertices.end());
   }
+
+ protected:
+  typedef std::unordered_map<int, Vertex<T>> vMap;
+  vMap vertices;
+
+ private:
+  size_t numEdges;
 };
 
 #endif // !__GRAPH_HPP__
