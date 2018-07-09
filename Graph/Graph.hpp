@@ -21,7 +21,8 @@ class Vertex {
   Vertex() {
   }
 
-  Vertex(int name, const T& data) : neighbours(), name(name), data(data) {
+  Vertex(int name, const T& data) 
+    : neighbours(), name(name), data(data) {
   }
 
   void addNeighbour(Vertex<T>* neighbour) {
@@ -49,6 +50,8 @@ class Vertex {
 template<class T>
 class Graph {
  public:
+  typedef std::unordered_map<int, Vertex<T>> vMap;
+
   explicit Graph() : numEdges(0), vertices() {
   }
 
@@ -172,6 +175,11 @@ class Graph {
     const Vertex<T>& operator*() const {
       return it->second;
     }
+
+    const Vertex<T>* operator->() const {
+      return &(it->second);
+    }
+
    private:
     friend class Graph<T>; // so Graph<T> will be able to call c'tor
     const Graph<T> * graph;
@@ -191,7 +199,6 @@ class Graph {
   }
 
  protected:
-  typedef std::unordered_map<int, Vertex<T>> vMap;
   vMap vertices;
 
  private:

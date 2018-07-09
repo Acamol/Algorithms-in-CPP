@@ -1,8 +1,9 @@
-#ifndef __DFSTREE__
-#define __DFSTREE__
+#ifndef __DFSGRAP_HPP__
+#define __DFSGRAP_HPP__
 
 #include "Graph.hpp"
 #include <unordered_set>
+#include <unordered_map>
 #include <stack>
 #include <memory>
 
@@ -18,8 +19,8 @@ class DFSGraph : public Graph<T> {
     Since DFSTreePtr is actually a uinque_ptr, it should be treated as such.
 
     Notice that the returned graph is not actually a tree by the formal
-    definition. Each vertex in the returned graph points to it parent
-    (except the root), as illustrated in the example below.
+    mathematical definition. Each vertex in the returned graph points to it
+    parent (except for the root), as illustrated in the example below.
 
     Example:
       Graph<int> g;
@@ -31,7 +32,7 @@ class DFSGraph : public Graph<T> {
       DFSTree tree = g.DFS(0);
       tree->getData(0);
 
-  So a diagram of g can be thought like this:
+  So a diagram of g can be thought of something like this:
 
             +-+
         +---+0+---+
@@ -57,24 +58,28 @@ class DFSGraph : public Graph<T> {
     DFSTreePtr tree = std::make_unique<DFSGraph<T>>();
     if (!this->contains(name)) return tree;
 
-    const Vertex<int>& vstart = this->getVertex(name);
-    std::unordered_set<int> visited;
+    const Vertex<int>& start = this->getVertex(name);
+    std::unordered_set<int> discovered;
     std::stack<const Vertex<int>*> S;
-    S.push(&vstart);
-    tree->addVertex(vstart.getName(), vstart.getData());
+
+    S.push(&start);
+    tree->addVertex(start.getName(), start.getData());
 
     while (!S.empty()) {
       const Vertex<int> * curr = S.top();
       S.pop();
-      // curr was not visited
-      if (visited.find(curr->getName()) == visited.end()) {
-        // label curr as visited
-        visited.insert(curr->getName());
+
+      // check if curr was not discovered
+      if (discovered.find(curr->getName()) == discovered.end()) {
+        // label curr as discovered
+        discovered.insert(curr->getName());
 
         for (auto v : curr->getNeighbours()) {
           S.push(v);
-          tree->addVertex(v->getName(), v->getData());
-          tree->addEdge(v->getName(), curr->getName());
+          if (!tree->contains(v->getName())) {
+            tree->addVertex(v->getName(), v->getData());
+            tree->addEdge(v->getName(), curr->getName());
+          }
         }
       }
     }
@@ -82,4 +87,4 @@ class DFSGraph : public Graph<T> {
   }
 };
 
-#endif // !__DFSTREE__
+#endif // !__DFSGRAP_HPP__
