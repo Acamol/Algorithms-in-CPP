@@ -1,5 +1,9 @@
+//Google Test headers
 #include <gtest/gtest.h>
+
 #include "../Graph/DFSGraph.hpp"
+
+namespace {
 
 class DFSGraphTest : public ::testing::Test {
 protected:
@@ -40,7 +44,6 @@ protected:
   DFSGraph<int> g;
 };
 
-namespace {
   TEST_F(DFSGraphTest, DFSTree) {
     DFSGraph<int>::DFSTreePtr tree1 = g.DFS(0);
     // tree1 needs to be a spanning tree

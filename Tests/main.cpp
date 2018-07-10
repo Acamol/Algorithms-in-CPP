@@ -1,4 +1,5 @@
-#include <gtest/gtest.h> // Google Test headers
+// Google Test headers
+#include <gtest/gtest.h>
 
 int main(int argc, char ** argv) {
   ::testing::InitGoogleTest(&argc, argv);

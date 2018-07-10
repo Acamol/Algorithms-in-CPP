@@ -18,15 +18,19 @@ class Vertex {
  public:
   typedef std::list<Vertex<T>*> NeighboursList;
 
-  Vertex() {
+  explicit Vertex() {
   }
 
-  Vertex(int name, const T& data) 
-    : neighbours(), name(name), data(data) {
+  explicit Vertex(int name, const T& data) 
+    : neighbours(), name(name), data(data), inDegree(0) {
   }
 
-  void addNeighbour(Vertex<T>* neighbour) {
+  virtual ~Vertex() {
+  }
+
+  virtual void addNeighbour(Vertex<T>* neighbour) {
     neighbours.push_back(neighbour);
+    ++(neighbour->inDegree);
   }
 
   int getName() const {
@@ -41,10 +45,31 @@ class Vertex {
     return neighbours;
   }
 
- private:
+  NeighboursList& getNeighbours() {
+    return neighbours;
+  }
+
+  void removeNeighbour(Vertex<T>* neighbour) {
+    for (auto it = neighbours.begin(); it != neighbours.end(); ++it) {
+      if (*it == neighbour) {
+        --neighbour->inDegree;
+        neighbours.erase(it);
+        break;
+      }
+    }
+  }
+
+  std::size_t getInDegree() const {
+    return inDegree;
+  }
+
+ protected:
   std::list<Vertex<T>*> neighbours;
+
+ private:
   int name;
   T data;
+  int inDegree;
 };
 
 template<class T>
@@ -59,16 +84,15 @@ class Graph {
     Complexity: O(V+E)
   */
   Graph(const Graph& g) {
-    if (this != &g) {
-      vertices = g.vertices;
-      for (auto& pair : vertices) {
-        Vertex<T>& v = pair.second;
-        for (auto& vertexPtr : v.getNeighbours()) {
-          // the neighours are pointing to vertices in
-          // g.vertices right now. this for loop fixes it.
-          auto itToPtr = vertices.find(vertexPtr->getName());
-          vertexPtr = &(itToPtr->second);
-        }
+    numEdges = g.numEdges;
+    vertices = g.vertices;
+    for (auto& pair : vertices) {
+      Vertex<T>& v = pair.second;
+      for (auto& vertexPtr : v.getNeighbours()) {
+        // the neighours are pointing to vertices in
+        // g.vertices right now. this for loop fixes it.
+        auto itToPtr = vertices.find(vertexPtr->getName());
+        vertexPtr = &(itToPtr->second);
       }
     }
   }
@@ -78,6 +102,7 @@ class Graph {
   */
   Graph& operator=(const Graph& g) {
     if (this != &g) {
+      numEdges = g.numEdges;
       vertices = g.vertices;
       for (auto& pair : vertices) {
         Vertex<T>& v = pair.second;
@@ -93,7 +118,7 @@ class Graph {
   /*
     Complexity: constant
   */
-  void addVertex(int name, const T& data) {
+  virtual void addVertex(int name, const T& data) {
     if (!contains(name)) {
       // there is no vertice with that name
       vertices[name] = Vertex<T>(name, data);
@@ -117,6 +142,15 @@ class Graph {
     // decide what to do if one of the vetices does not exist
   }
 
+  void removeEdge(int name1, int name2) {
+    if (contains(name1) && contains(name2)) {
+      // both vertices exists
+      Vertex<T>& v1 = vertices[name1];
+      Vertex<T>& v2 = vertices[name2];
+      v1.removeNeighbour(&v2);
+    }
+  }
+
   /*
     Complexity: constant
   */
@@ -137,11 +171,11 @@ class Graph {
     return (vertices.find(name) != vertices.end());
   }
 
-  size_t getNumOfVertices() const {
+  std::size_t getNumOfVertices() const {
     return vertices.size();
   }
 
-  size_t getNumOfEdges() {
+  std::size_t getNumOfEdges() {
     return numEdges;
   }
 

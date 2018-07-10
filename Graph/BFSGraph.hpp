@@ -1,3 +1,10 @@
+/*
+The definition of Breadth-First Search can be found here:
+https://en.wikipedia.org/wiki/Breadth-first_search
+
+The complexity is O(V+E).
+*/
+
 #ifndef __BFSGRAPH_HPP__
 #define __BFSGRAPH_HPP__
 
@@ -13,7 +20,7 @@ class BFSGraph : public Graph<T> {
   
   /*
   Returns a BFSTreePtr which is a pointer to a graph representation of a
-  BFS tree whose root is the vertex "name". If no such vertex exists,
+  BFS tree whose root is the vertex 'name'. If no such vertex exists,
   returns an empty tree.
   Since BFSTreePtr is actually a uinque_ptr, it should be treated as such.
 
@@ -74,8 +81,8 @@ class BFSGraph : public Graph<T> {
         discovered.insert(curr->getName());
 
         for (auto v : curr->getNeighbours()) {
-          Q.push(v);
           if (!tree->contains(v->getName())) {
+            Q.push(v);
             tree->addVertex(v->getName(), v->getData());
             tree->addEdge(v->getName(), curr->getName());
           }

@@ -1,6 +1,9 @@
-#include <gtest/gtest.h> // Google Test headers
+// Google Test headers
+#include <gtest/gtest.h>
 
 #include "../Graph/BFSGraph.hpp"
+
+namespace {
 
 class BFSGraphTest : public ::testing::Test {
 protected:
@@ -40,8 +43,6 @@ protected:
 
   BFSGraph<int> g;
 };
-
-namespace {
 
   TEST_F(BFSGraphTest, BFSTree) {
     BFSGraph<int>::BFSTreePtr tree1 = g.BFS(0);

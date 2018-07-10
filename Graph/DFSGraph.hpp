@@ -1,5 +1,12 @@
-#ifndef __DFSGRAP_HPP__
-#define __DFSGRAP_HPP__
+/*
+The definition of Breadth-First Search can be found here:
+https://en.wikipedia.org/wiki/Breadth-first_search
+
+The complexity is O(V+E).
+*/
+
+#ifndef __DFSGRAPH_HPP__
+#define __DFSGRAPH_HPP__
 
 #include "Graph.hpp"
 #include <unordered_set>
@@ -14,7 +21,7 @@ class DFSGraph : public Graph<T> {
 
   /*
     Returns a DFSTreePtr which is a pointer to a graph representation of a
-    DFS tree whose root is the vertex "name". If no such vertex exists,
+    DFS tree whose root is the vertex 'name'. If no such vertex exists,
     returns an empty tree.
     Since DFSTreePtr is actually a uinque_ptr, it should be treated as such.
 
@@ -75,8 +82,8 @@ class DFSGraph : public Graph<T> {
         discovered.insert(curr->getName());
 
         for (auto v : curr->getNeighbours()) {
-          S.push(v);
           if (!tree->contains(v->getName())) {
+            S.push(v);
             tree->addVertex(v->getName(), v->getData());
             tree->addEdge(v->getName(), curr->getName());
           }
@@ -87,4 +94,4 @@ class DFSGraph : public Graph<T> {
   }
 };
 
-#endif // !__DFSGRAP_HPP__
+#endif // !__DFSGRAPH_HPP__
