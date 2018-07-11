@@ -38,7 +38,7 @@ class TopologicalSortGraph : public Graph<T> {
 
     // find all sources in the graph. the definition of source is a vertex
     // which its indegree is 0.
-    std::unique_ptr<std::list<const Vertex<T>*>> sources = copy.findSources();
+    auto sources = copy.findSources();
 
     // the list that will hold the topological sort.
     TopologicalSortPtr result = std::make_unique<std::list<Vertex<T>>>();
