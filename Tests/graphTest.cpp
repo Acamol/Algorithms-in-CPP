@@ -1,7 +1,7 @@
 // Google Test headers
 #include <gtest/gtest.h> 
 
-#include "../Graph/Graph.hpp"
+#include "../Data Structures/Graph.hpp"
 #include <set>
 
 namespace {

@@ -3,6 +3,8 @@
 
 #include "../Dynamic Programming/KnapsackProblem.hpp"
 
+namespace {
+
 TEST(Knapsack, BasicCorrectness) {
   Knapsack a(7);
   std::vector<Knapsack::Box> vec;
@@ -48,3 +50,5 @@ TEST(Knapsack, BasicCorrectness) {
   }
   ASSERT_EQ(60, profit);
 }
+
+} // namespace

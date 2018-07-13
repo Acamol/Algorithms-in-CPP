@@ -8,7 +8,7 @@ The complexity is O(V+E).
 #ifndef __BFSGRAPH_HPP__
 #define __BFSGRAPH_HPP__
 
-#include "Graph.hpp"
+#include "../Data Structures/Graph.hpp"
 #include <unordered_set>
 #include <queue>
 #include <memory>

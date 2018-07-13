@@ -4,7 +4,7 @@
 
   This is by no means a complete data structure. Only the most basic
   operations are implemented, and only those I use in my algorithm
-  implemantations.
+implemantations.
 */
 
 #ifndef __GRAPH_HPP__
@@ -15,13 +15,13 @@
 
 template<class T>
 class Vertex {
- public:
+public:
   typedef std::list<Vertex<T>*> NeighboursList;
 
   explicit Vertex() {
   }
 
-  explicit Vertex(int name, const T& data) 
+  explicit Vertex(int name, const T& data)
     : neighbours(), name(name), data(data), inDegree(0) {
   }
 
@@ -63,10 +63,10 @@ class Vertex {
     return inDegree;
   }
 
- protected:
+protected:
   std::list<Vertex<T>*> neighbours;
 
- private:
+private:
   int name;
   T data;
   int inDegree;
@@ -74,14 +74,14 @@ class Vertex {
 
 template<class T>
 class Graph {
- public:
+public:
   typedef std::unordered_map<int, Vertex<T>> vMap;
 
   explicit Graph() : numEdges(0), vertices() {
   }
 
   /*
-    Complexity: O(V+E)
+  Complexity: O(V+E)
   */
   Graph(const Graph& g) {
     numEdges = g.numEdges;
@@ -98,7 +98,7 @@ class Graph {
   }
 
   /*
-    Complexity: O(V+E)
+  Complexity: O(V+E)
   */
   Graph& operator=(const Graph& g) {
     if (this != &g) {
@@ -116,9 +116,9 @@ class Graph {
   }
 
   /*
-    Complexity: constant
+  Complexity: constant
   */
-  virtual void addVertex(int name, const T& data) {
+  void addVertex(int name, const T& data) {
     if (!contains(name)) {
       // there is no vertice with that name
       vertices[name] = Vertex<T>(name, data);
@@ -128,7 +128,7 @@ class Graph {
   }
 
   /*
-    Complexity: constant
+  Complexity: constant
   */
   void addEdge(int name1, int name2) {
     if (contains(name1) && contains(name2)) {
@@ -152,7 +152,7 @@ class Graph {
   }
 
   /*
-    Complexity: constant
+  Complexity: constant
   */
   const Vertex<T>& getVertex(int name) const {
     if (!contains(name)) {
@@ -163,9 +163,9 @@ class Graph {
   }
 
   /*
-    Returns true if a vertex with identifier 'name' exists, and false otherwise.
+  Returns true if a vertex with identifier 'name' exists, and false otherwise.
 
-    Complexity: constant
+  Complexity: constant
   */
   bool contains(int name) const {
     return (vertices.find(name) != vertices.end());
@@ -180,18 +180,18 @@ class Graph {
   }
 
   /*
-    Used to iterate over vertices in the graph. There is no specific order.
-    Value cannot be changed through an iterator (like const_iterator).
+  Used to iterate over vertices in the graph. There is no specific order.
+  Value cannot be changed through an iterator (like const_iterator).
 
-    Example:
-      Graph<int> g;
-      ... adding some vertices ...
-      for (auto& v : g) {
-        std::cout << v.getData() << "\n";
-      }
+  Example:
+  Graph<int> g;
+  ... adding some vertices ...
+  for (auto& v : g) {
+  std::cout << v.getData() << "\n";
+  }
   */
   class Iterator {
-   public:
+  public:
     Iterator & operator++() {
       ++it;
       return *this;
@@ -214,7 +214,7 @@ class Graph {
       return &(it->second);
     }
 
-   private:
+  private:
     friend class Graph<T>; // so Graph<T> will be able to call c'tor
     const Graph<T> * graph;
     typename vMap::iterator it;
@@ -232,11 +232,10 @@ class Graph {
     return Iterator(this, vertices.end());
   }
 
- protected:
+protected:
   vMap vertices;
-
- private:
   size_t numEdges;
+
 };
 
 #endif // !__GRAPH_HPP__

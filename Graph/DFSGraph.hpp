@@ -8,7 +8,7 @@ The complexity is O(V+E).
 #ifndef __DFSGRAPH_HPP__
 #define __DFSGRAPH_HPP__
 
-#include "Graph.hpp"
+#include "../Data Structures/Graph.hpp"
 #include <unordered_set>
 #include <unordered_map>
 #include <stack>

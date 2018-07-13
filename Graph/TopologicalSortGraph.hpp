@@ -17,7 +17,7 @@
 #ifndef __TOPOLOGICAL_SORT__
 #define __TOPOLOGICAL_SORT__
 
-#include "Graph.hpp"
+#include "../Data Structures/Graph.hpp"
 #include <unordered_set>
 #include <list>
 #include <stack>
