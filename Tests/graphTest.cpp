@@ -43,6 +43,7 @@ TEST(GraphBasic, CopyCtorAssignment) {
   g.addVertex(1, 0);
   g.addVertex(2, 0);
   Graph<int> copy = g; // copy c'tor
+  
   ASSERT_EQ(2, g.getNumOfVertices());
   ASSERT_EQ(g.getNumOfVertices(), copy.getNumOfVertices());
   copy.addEdge(1, 2);
@@ -70,6 +71,10 @@ TEST(GraphBasic, SimpleEdgeInsertion) {
 struct bob {
   int a;
   bool b;
+
+  friend bool operator<(const struct bob& first, const struct bob& second) {
+    return first.a < second.a;
+  }
 };
 
 #define SIZE_OF_BOB_TEST 100000
@@ -90,8 +95,8 @@ protected:
 
 TEST_F(GraphBobTest, LotsOfVertexInsertion) {
   std::set<int> lNames;
-  auto compareBob = [](const struct bob& b1, const struct bob& b2) -> bool { return b1.a < b2.a; };
-  auto lBob = std::set<struct bob, decltype(compareBob)>(compareBob);
+  //auto compareBob = [](const struct bob& b1, const struct bob& b2) -> bool { return b1.a < b2.a; };
+  auto lBob = std::set<struct bob>();
   for (auto v : g) {
     lNames.insert(v.getName());
     lBob.insert(v.getData());

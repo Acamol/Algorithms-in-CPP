@@ -1,11 +1,13 @@
 /*
-  The definition of of this data structure can be found here:
+  The definition of this data structure can be found here:
   https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 
   The identifier of a set (its key) in this implementation is a positive
-  integer. If different type of key is needed it can easily be done with
+  integer. If a different type of key is needed it can easily be done with
   mapping from the key needed to the identifers this data structure
   provides. An example can be seen in "Greedy Algorithms/MSTGraph.hpp".
+
+  TODO: include bigO analysis, and state complexity of each operation
 */
 
 #ifndef __DISJOINT_SET_HPP__
