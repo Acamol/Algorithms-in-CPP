@@ -28,7 +28,7 @@
 
 template<class T>
 class MSTGraph : public Graph<T> {
-public:
+ public:
   typedef std::unique_ptr<MSTGraph<T>> MSTPtr;
 
   explicit MSTGraph() : Graph<T>(), edges(), weight(0) {
@@ -68,10 +68,12 @@ public:
 
     // Creates |V| disjoint sets, with identifiers from 0 to |V|-1.
     DisjointSet sets(this->getNumOfVertices());
+
     // map from vertex identifier to set identifier
     std::unordered_map<int, int> vertexToSet;
-    vertexToSet.reserve(this->getNumOfVertices());
+    vertexToSet.reserve(this->getNumOfVertices()); // just optimization
     auto it = this->vertices.begin();
+
     // Defines the mapping between vertices to set identifiers
     for (std::size_t i = 0; i < this->getNumOfVertices(); ++i, ++it) {
       vertexToSet[it->second.getName()] = i;
@@ -92,7 +94,7 @@ public:
       int setFrom = sets.find(vertexToSet[e.from]);
       int setTo = sets.find(vertexToSet[e.to]);
 
-      // make sure the edge does not creates a circle.
+      // make sure the edge does not create a circle.
       // if it does, it is not added to the future tree.
       if (setFrom != setTo) {
         sets.Union(setFrom, setTo);
@@ -103,7 +105,7 @@ public:
       edgesCopy.pop_back();
     }
 
-    // if it is not a tree, reset 'tree' it to an empty graph.
+    // if it is not a tree yet, reset 'tree' to an empty graph.
     if (tree->getNumOfEdges() < tree->getNumOfVertices() - 1) {
       tree = std::make_unique<MSTGraph<T>>();
     }
@@ -115,7 +117,7 @@ public:
     return weight;
   }
 
-private:
+ private:
   class Edge {
   public:
     explicit Edge(int from, int to, int weight)

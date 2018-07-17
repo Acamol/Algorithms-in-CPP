@@ -268,7 +268,6 @@ class Graph {
  protected:
   vMap vertices;
   size_t numEdges;
-
 };
 
 #endif // !__GRAPH_HPP__
