@@ -19,7 +19,6 @@ protected:
     g.addEdge(3, 2, 3);
     g.addEdge(3, 5, 1);
     g.addEdge(4, 5, 2);
-    
   }
  
   ShortestPathGraph<int> g;

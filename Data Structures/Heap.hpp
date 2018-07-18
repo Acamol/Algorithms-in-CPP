@@ -1,8 +1,3 @@
-// Notice: in order to use decreaseKey, all keys must be unique.
-// Maybe future implementation will fix that.
-
-// TODO: enable identical keys to use decrease key
-
 #ifndef __HEAP_HPP__
 #define __HEAP_HPP__
 
@@ -38,22 +33,17 @@ class Heap {
   }
 
   explicit Heap(const std::vector<Key>& items) {
-    std::size_t pos = 0;
-    keyToPos.reserve(items.size());
     heap.reserve(items.size());
     for (auto& key : items) {
       heap.push_back(HeapUtil::Node<Key, Compare>(key));
-      keyToPos[key] = pos++;
     }
     heapify();
   }
 
   template<class Iterator>
   explicit Heap(Iterator first, Iterator last) {
-    std::size_t pos = 0;
     while (first != last) {
       heap.push_back(HeapUtil::Node<Key, Compare>(*first));
-      keyToPos[*first] = pos++;
       ++first;
     }
 
@@ -68,8 +58,6 @@ class Heap {
     }
     
     swap(heap.front(), heap.back());
-    keyToPos[heap.front().key] = 0;
-    keyToPos.erase(heap.back().key);
     heap.pop_back();
     siftDown(0);
   }
@@ -84,7 +72,6 @@ class Heap {
 
   void push(const Key& k) {
     heap.push_back(HeapUtil::Node<Key, Compare>(k));
-    keyToPos[k] = heap.size() - 1;
     siftUp(heap.size() - 1);
   }
 
@@ -98,17 +85,6 @@ class Heap {
 
   std::size_t size() const {
     return heap.size();
-  }
-
-  void decreaseKey(const Key& key, const Key& newVal) {
-    if (keyToPos.find(key) == keyToPos.end() || Compare()(key, newVal)) return;
-
-    std::size_t pos = keyToPos[key];
-    keyToPos.erase(key);
-    keyToPos[newVal] = pos;
-    heap[pos] = HeapUtil::Node<Key, Compare>(newVal);
-    
-    siftUp(pos);
   }
 
  private:
@@ -127,12 +103,12 @@ class Heap {
   }
 
   HeapUtil::Node<Key, Compare>& getLeftSon(std::size_t pos) {
-    assert(hasLeftSon(pos));
+    //assert(hasLeftSon(pos));
     return heap[pos * 2 + 1];
   }
 
   HeapUtil::Node<Key, Compare>& getRightSon(std::size_t pos) {
-    assert(hasRightSon(pos));
+    //assert(hasRightSon(pos));
     return heap[pos * 2 + 2];
   }
 
@@ -156,8 +132,6 @@ class Heap {
     }
 
     if (minPos != pos) {
-      keyToPos[heap[minPos].key] = pos;
-      keyToPos[heap[pos].key] = minPos;
       swap(heap[minPos], heap[pos]);
       return { minPos, true };
     }
@@ -169,8 +143,6 @@ class Heap {
 
     // (pos - 1) / 2 is the parent position
     while (pos != 0 && heap[pos] < heap[(pos - 1) / 2]) {
-      keyToPos[heap[pos].key] = (pos - 1) / 2;
-      keyToPos[heap[(pos - 1) / 2].key] = pos;
       swap(heap[pos], heap[(pos - 1) / 2]);
       pos = (pos - 1) / 2;
     }
@@ -193,7 +165,6 @@ class Heap {
   }
 
   std::vector<HeapUtil::Node<Key, Compare>> heap;
-  std::unordered_map<Key, std::size_t> keyToPos;
 
 };
 

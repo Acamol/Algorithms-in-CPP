@@ -5,7 +5,7 @@
   This is an implementation of Dijkstra's algorithm, namely, solves
   the single-source shortest path problem with non-negative weights.
 
-  * A small bug is described in line 112. If we limit ourselfs not to
+  * A small bug is described in line 116. If we limit ourselfs not to
     use parallel edges, it is not an issue. It can be easily solved,
     for example, by giving each edge a unique identifier, but too much code
     for this problem was already written as it is, so I'll just leave it
@@ -113,7 +113,7 @@ class ShortestPathGraph : public Graph<T> {
 
   void removeEdge(int from, int to) {
     Graph<T>::removeEdge(from, to);
-    // Bug! if there are parallel edges, we don't know the weight of the one
+    // Uh-oh! if there are parallel edges, we don't know the weight of the one
     // that we don't remove. 
     edgeWeights.erase(Edge(from, to));
   }
@@ -147,7 +147,10 @@ class ShortestPathGraph : public Graph<T> {
     SPForestPtr forest = std::make_unique<ShortestPathGraph<T>>(*this);
 
     // Heap of vertices, sorted by distances from 's'.
-    Heap<HeapNode<T>> Q = createVerticesHeapByDist(s);
+    Heap<HeapNode<T>> Q;
+    Q.push(HeapNode<T>(vertices[s], 0));
+    vertexDist[s] = 0;
+    std::unordered_set<int> visited;
 
     // since the graph uses Adjacency list, this map simplfy and reduces the 
     // time of finding an edge from one vertex to another.
@@ -164,30 +167,42 @@ class ShortestPathGraph : public Graph<T> {
     // and the graph is not connected.
 
     while (!Q.empty()) {
-      HeapNode<T>& top = Q.top();
+      HeapNode<T> top = Q.top();
+      Q.pop();
       int from = top.v->getName();
+      // if we visited this node, it means we already have a shorter path to it,
+      // so we can just ignore any future occurrences of this node.
+      if (visited.find(from) != visited.end()) {
+        continue;
+      }
+      visited.insert(from);
+
       for (auto& u : top.v->getNeighbours()) {
         int to = u->getName();
-        double weight = edgeWeights[Edge( from, to )];
+        double weight = edgeWeights[Edge(from, to)];
         double alt = top.dist + weight;
 
-        // check if relaxation is possible
+        // check if relaxation is needed
         if (alt < forest->vertexDist[to]) {
+
           // if 'u' is not relaxed for the first time, then the previous edge
           // should be removed from 'tree'.
           if (edgeFromToMap.find(to) != edgeFromToMap.end()) {
             forest->removeEdge(to, edgeFromToMap[to]);
             edgeFromToMap.erase(to);
           }
+          edgeFromToMap[to] = from;
 
-          Q.decreaseKey(HeapNode<T>(*u, forest->vertexDist[to]), HeapNode<T>(*u, alt));
           forest->vertexDist[to] = alt;
           forest->addEdge(to, from, weight);
-          edgeFromToMap[to] = from;
+
+          // if the node we've just relaxed is discoverd for the first time
+          // we need to push it to the heap.
+          if (visited.find(to) == visited.end()) {
+            Q.push(HeapNode<T>(*u, alt));
+          }
         }
       }
-
-      Q.pop();
     }
 
     return forest;
@@ -204,21 +219,6 @@ class ShortestPathGraph : public Graph<T> {
   // map of distances from a certain vertex to all other vertices.
   // valid only if this graph was produced through getShortestPath()
   std::unordered_map<int, double> vertexDist;
-
-  Heap<HeapNode<T>> createVerticesHeapByDist(int s) {
-    std::vector<HeapNode<T>> nodes;
-    Vertex<T>& start = this->vertices[s]; // !!! call this function only if 's' is in the graph !!! 
-    nodes.push_back(HeapNode<T>(start, 0));
-    vertexDist[s] = 0;
-    for (auto& p : this->vertices) {
-      if (p.first != s) {
-        nodes.push_back(HeapNode<T>(p.second));
-        vertexDist[p.second.getName()] = std::numeric_limits<double>::max();
-      }
-    }
-
-    return Heap<HeapNode<T>>(nodes);
-  }
 
   void setToNotRechable(int s) {
     for (auto& pair : this->vertices) {

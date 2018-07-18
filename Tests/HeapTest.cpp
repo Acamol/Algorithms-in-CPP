@@ -19,9 +19,4 @@ TEST(HeapCorrectness, IteratorCtor) {
   Heap<int> heap(vec.begin(), vec.end());
 }
 
-TEST(HeapCorrectness, decreaseKey) {
-  Heap<int> heap({ 10, 2, 6, 0, 4 });
-  heap.decreaseKey(4, 1);
-}
-
 } // namespace
