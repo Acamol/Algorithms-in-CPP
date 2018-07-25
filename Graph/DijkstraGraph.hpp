@@ -6,22 +6,22 @@
   the single-source shortest path problem with non-negative weights.
 
   * A small bug is described in line 116. If we limit ourselfs not to
-    use parallel edges, it is not an issue. It can be easily solved,
-    for example, by giving each edge a unique identifier, but too much code
-    for this problem was already written as it is, so I'll just leave it
-    like that with this comment.
+  use parallel edges, it is not an issue. It can be easily solved,
+  for example, by giving each edge a unique identifier, but too much code
+  for this problem was already written as it is, so I'll just leave it
+  like that with this comment.
 */
 
-#ifndef __SHORTESTPATHGRAPH_HPP__
-#define __SHORTESTPATHGRAPH_HPP__
+#ifndef __DIJKSTRA_GRAPH_HPP__
+#define __DIJKSTRA_GRAPH_HPP__
 
 #include "../Data Structures/Heap.hpp"
 #include "../Data Structures/Graph.hpp"
 #include <memory>
 #include <unordered_set>
+#include <unordered_map>
 #include <functional>
 #include <algorithm>
-#include <cmath>
 #include <limits>
 
 class Edge {
@@ -93,9 +93,9 @@ namespace std {
 }
 
 template<class T>
-class ShortestPathGraph : public Graph<T> {
- public:
-  typedef std::unique_ptr<ShortestPathGraph<T>> SPForestPtr;
+class DijkstraGraph : public Graph<T> {
+public:
+  typedef std::unique_ptr<DijkstraGraph<T>> SPForestPtr;
 
   void addEdge(int from, int to, double weight) {
     Graph<T>::addEdge(from, to);
@@ -103,10 +103,10 @@ class ShortestPathGraph : public Graph<T> {
     // edgeWeights map keeps only the minimal edge of parallel, as this is
     // enough to solve the SSSP problem.
     if (this->contains(from) && this->contains(to)) {
-      if (edgeWeights.find(Edge( from, to )) != edgeWeights.end()) {
-        edgeWeights[Edge( from, to )] = std::min(weight, edgeWeights[Edge( from, to )]);
+      if (edgeWeights.find(Edge(from, to)) != edgeWeights.end()) {
+        edgeWeights[Edge(from, to)] = std::min(weight, edgeWeights[Edge(from, to)]);
       } else {
-        edgeWeights[Edge( from, to )] = weight;
+        edgeWeights[Edge(from, to)] = weight;
       }
     }
   }
@@ -130,21 +130,23 @@ class ShortestPathGraph : public Graph<T> {
   // it would be a disjoint union of trees: all reachable vertices from 's'
   // would be one tree and each one of the other vertices would be a tree
   // (in other words, an isolated vertex).
-  // If 's', the vertex to start from, is not in the graph a null pointer,
-  // returns an empty graph.
+  // If 's', the vertex to start from, is not in the graph, returns an empty
+  // graph.
   //
-  // The result graph is returned as a unique_ptr.
+  // The result graph is returned as unique_ptr.
   //
   // 's' is the vertex to start from.
+  //
+  // NOTE: only works on a non-negative weights.
   //
   // TODO: add bigO analysis.
   SPForestPtr getShortestPaths(int s) {
     if (!contains(s)) {
-      return std::make_unique<ShortestPathGraph<T>>();
+      return std::make_unique<DijkstraGraph<T>>();
     }
 
     // the result graph.
-    SPForestPtr forest = std::make_unique<ShortestPathGraph<T>>(*this);
+    SPForestPtr forest = std::make_unique<DijkstraGraph<T>>(*this);
 
     // Heap of vertices, sorted by distances from 's'.
     Heap<HeapNode<T>> Q;
@@ -186,7 +188,7 @@ class ShortestPathGraph : public Graph<T> {
         if (alt < forest->vertexDist[to]) {
 
           // if 'u' is not relaxed for the first time, then the previous edge
-          // should be removed from 'tree'.
+          // should be removed from 'forest'.
           if (edgeFromToMap.find(to) != edgeFromToMap.end()) {
             forest->removeEdge(to, edgeFromToMap[to]);
             edgeFromToMap.erase(to);
@@ -208,7 +210,7 @@ class ShortestPathGraph : public Graph<T> {
     return forest;
   }
 
- private:
+private:
 
   // the graph technically allows identical edges, but since 'edges' is
   // an unordered_set it stores only unique edges. i.e. it would not necessery

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../Graph/ShortestPathGraph.hpp"
+#include "../Graph/DijkstraGraph.hpp"
 
 namespace {
  
@@ -21,7 +21,7 @@ protected:
     g.addEdge(4, 5, 2);
   }
  
-  ShortestPathGraph<int> g;
+  DijkstraGraph<int> g;
 };
 
 TEST_F(SPTest, SimpleCorrectness) {
@@ -34,7 +34,7 @@ TEST_F(SPTest, SimpleCorrectness) {
 }
 
 TEST(SP_TDD, ExampleFromWiki) {
-  ShortestPathGraph<int> g;
+  DijkstraGraph<int> g;
   for (int i = 1; i <= 6; ++i) {
     g.addVertex(i, i);
   }

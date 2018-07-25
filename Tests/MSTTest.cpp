@@ -63,4 +63,25 @@ namespace {
     ASSERT_EQ(38, tree->getWeight());
   }
 
+  TEST(MSTCorrectness, K5) {
+    MSTGraph<int> g;
+
+    for (int i = 0; i <= 4; ++i) {
+      g.addVertex(i, i);
+    }
+
+    g.addEdge(0, 1, 24);
+    g.addEdge(0, 2, 13);
+    g.addEdge(0, 3, 13);
+    g.addEdge(0, 4, 22);
+    g.addEdge(1, 2, 22);
+    g.addEdge(1, 3, 13);
+    g.addEdge(1, 4, 13);
+    g.addEdge(2, 3, 19);
+    g.addEdge(2, 4, 14);
+    g.addEdge(3, 4, 19);
+    auto tree = g.getMST();
+
+    ASSERT_EQ(52, tree->getWeight());
+  }
 } // namespace
