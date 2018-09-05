@@ -14,18 +14,13 @@ The complexity is O(V+E).
 #include <stack>
 #include <memory>
 
-template<class T>
-class DFSGraph : public Graph<T> {
- public:
-  typedef std::unique_ptr<DFSGraph<T>> DFSTreePtr;
+namespace Acamol { namespace Graph {
 
-  /*
-    Returns a DFSTreePtr which is a pointer to a graph representation of a
-    DFS tree whose root is the vertex 'name'. If no such vertex exists,
-    returns an empty tree.
-    Since DFSTreePtr is actually a uinque_ptr, it should be treated as such.
+/*
+    Returns a unique_ptr a Graph representation of a DFS tree whose root is
+    the vertex 'name'. If no such vertex exists, returns an empty tree.
 
-    Notice that the returned graph is not actually a tree by the formal
+    Notice that the returned Graph is not actually a tree by the formal
     mathematical definition. Each vertex in the returned graph points to it
     parent (except for the root), as illustrated in the example below.
 
@@ -39,59 +34,63 @@ class DFSGraph : public Graph<T> {
       DFSTree tree = g.DFS(0);
       tree->getData(0);
 
-  So a diagram of g can be thought of something like this:
+    So a diagram of g can be thought of something like this:
 
-            +-+
-        +---+0+---+
-        |   +-+   |
-        |         |
-       +v+       +v+
-       |1|       |2|
-       +-+       +-+
+          +-+
+      +---+0+---+
+      |   +-+   |
+      |         |
+     +v+       +v+
+     |1|       |2|
+     +-+       +-+
 
-  And this is how (*tree) looks like:
+    And this is how (*tree) looks like:
 
-            +-+
-        +--->0<---+
-        |   +-+   |
-        |         |
-       +++       +++
-       |1|       |2|
-       +-+       +-+
+          +-+
+      +--->0<---+
+      |   +-+   |
+      |         |
+     +++       +++
+     |1|       |2|
+     +-+       +-+
 
-   Complexity: O(V+E) (theortically, can get worse if the map behaves really bad)
-  */
-  DFSTreePtr DFS(int name) const {
-    DFSTreePtr tree = std::make_unique<DFSGraph<T>>();
-    if (!this->contains(name)) return tree;
+    Complexity: O(V+E) (theortically, can get worse if the map behaves really bad)
+*/
 
-    const Vertex<int>& start = this->getVertex(name);
-    std::unordered_set<int> discovered;
-    std::stack<const Vertex<int>*> S;
+template<class T>
+Acamol::DataStructures::Graph<T> dfs(const Acamol::DataStructures::Graph<T>& graph, int source) {
+  Acamol::DataStructures::Graph<T> tree;
+  if (!graph.contains(source)) return tree;
 
-    S.push(&start);
-    tree->addVertex(start.getName(), start.getData());
+  const Acamol::DataStructures::Vertex<int>& start = graph.getVertex(source);
+  std::unordered_set<int> discovered;
+  std::stack<const Vertex<T>*> S;
 
-    while (!S.empty()) {
-      const Vertex<int> * curr = S.top();
-      S.pop();
+  S.push(&start);
+  tree.addVertex(start.getName(), start.getData());
 
-      // check if curr was not discovered
-      if (discovered.find(curr->getName()) == discovered.end()) {
-        // label curr as discovered
-        discovered.insert(curr->getName());
+  while (!S.empty()) {
+    const Acamol::DataStructures::Vertex<int> * curr = S.top();
+    S.pop();
 
-        for (auto v : curr->getNeighbours()) {
-          if (!tree->contains(v->getName())) {
-            S.push(v);
-            tree->addVertex(v->getName(), v->getData());
-            tree->addEdge(v->getName(), curr->getName());
-          }
+    // check if curr was not discovered
+    if (discovered.find(curr->getName()) == discovered.end()) {
+      // label curr as discovered
+      discovered.insert(curr->getName());
+
+      for (auto& pair : curr->getNeighbours()) {
+        Acamol::DataStructures::Vertex<T> * v = pair.second;
+        if (!tree.contains(v->getName())) {
+          S.push(v);
+          tree.addVertex(v->getName(), v->getData());
+          tree.addEdge(v->getName(), curr->getName());
         }
       }
     }
-    return tree;
   }
-};
+  return tree;
+}
+
+} }
 
 #endif // !__DFSGRAPH_HPP__

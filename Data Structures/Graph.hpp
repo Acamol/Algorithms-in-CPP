@@ -13,10 +13,12 @@
 #include <unordered_map>
 #include <utility>
 
+namespace Acamol { namespace DataStructures {
+
 template<class T>
 class Vertex {
 public:
-  typedef std::list<Vertex<T>*> NeighboursList;
+  typedef std::unordered_map<int, Vertex<T>*> NeighboursList;
 
   explicit Vertex() {
   }
@@ -29,7 +31,8 @@ public:
   }
 
   void addNeighbour(Vertex<T>* neighbour) {
-    neighbours.push_back(neighbour);
+    neighbours[neighbour->getName()] = neighbour;
+    //neighbours.push_back(neighbour);
     ++(neighbour->inDegree);
   }
 
@@ -49,19 +52,19 @@ public:
     return neighbours;
   }
 
-  void removeNeighbour(Vertex<T>* neighbour) {
-    for (auto it = neighbours.begin(); it != neighbours.end(); ++it) {
-      if (*it == neighbour) {
-        --neighbour->inDegree;
-        neighbours.erase(it);
-        break;
-      }
+  bool removeNeighbour(Vertex<T>* neighbour) {
+    if (neighbours.find(neighbour->getName()) != neighbours.end()) {
+      neighbours.erase(neighbour->getName());
+      --neighbour->inDegree;
+      return true;
     }
+
+    return false;
   }
 
   void clearEdges() {
     for (auto it = neighbours.begin(); it != neighbours.end();) {
-      (*it)->inDegree = 0;
+      (*it).second->inDegree = 0;
       it = neighbours.erase(it);
     }
   }
@@ -75,7 +78,7 @@ public:
   }
 
  protected:
-  std::list<Vertex<T>*> neighbours;
+  NeighboursList neighbours;
 
  private:
   int name;
@@ -102,8 +105,8 @@ class Graph {
       for (auto& vertexPtr : v.getNeighbours()) {
         // the neighours are pointing to vertices in
         // g.vertices right now. this for loop fixes it.
-        auto itToPtr = vertices.find(vertexPtr->getName());
-        vertexPtr = &(itToPtr->second);
+        auto itToPtr = vertices.find(vertexPtr.second->getName());
+        vertexPtr.second = &(itToPtr->second);
       }
     }
   }
@@ -127,38 +130,48 @@ class Graph {
   /*
     Complexity: constant
   */
-  void addVertex(int name, const T& data) {
+  bool addVertex(int name, const T& data) {
     if (!contains(name)) {
       // there is no vertice with that name
       vertices[name] = Vertex<T>(name, data);
+      return true;
     }
 
-    // decide what to do if vertex with that name already exists
+    return false;
   }
 
   /*
     Complexity: constant
   */
-  void addEdge(int name1, int name2) {
+  bool addEdge(int name1, int name2) {
     if (contains(name1) && contains(name2)) {
       // both vertices exists
       Vertex<T>& v1 = vertices[name1];
       Vertex<T>& v2 = vertices[name2];
-      v1.addNeighbour(&v2);
-      ++numEdges;
+
+      // allow only to add edge once
+      if (v1.getNeighbours().find(name2) == v1.getNeighbours().end()) {
+        v1.addNeighbour(&v2);
+        ++numEdges;
+        return true;
+      }
     }
 
-    // decide what to do if one of the vetices does not exist
+    return false;
   }
 
-  void removeEdge(int name1, int name2) {
+  bool removeEdge(int name1, int name2) {
     if (contains(name1) && contains(name2)) {
       // both vertices exists
       Vertex<T>& v1 = vertices[name1];
       Vertex<T>& v2 = vertices[name2];
-      v1.removeNeighbour(&v2);
-      --numEdges;
+      if (v1.removeNeighbour(&v2)) {
+        --numEdges;
+        return true;
+      }
     }
+
+    return false;
   }
 
   /*
@@ -170,6 +183,13 @@ class Graph {
     }
 
     return vertices.find(name)->second;
+  }
+
+  /*
+    Complexity: constant
+  */
+  const vMap& getVertices() const {
+    return vertices;
   }
 
   /*
@@ -267,7 +287,9 @@ class Graph {
 
  protected:
   vMap vertices;
-  size_t numEdges;
+  std::size_t numEdges;
 };
+
+} } // namespace
 
 #endif // !__GRAPH_HPP__

@@ -2,6 +2,8 @@
 #include <string>
 #include "../Greedy Algorithms/HuffmanCoding.hpp"
 
+using namespace Acamol::Greedy;
+
 namespace {
 TEST(HuffmanCoding, JFKSpeech) {
   

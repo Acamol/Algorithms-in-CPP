@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "../Data Structures/Heap.hpp"
+
+using namespace Acamol::DataStructures;
+
 namespace {
    
 TEST(HeapCorrectness, heapify) {

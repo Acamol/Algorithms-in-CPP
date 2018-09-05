@@ -4,233 +4,103 @@
 
   This is an implementation of Dijkstra's algorithm, namely, solves
   the single-source shortest path problem with non-negative weights.
-
-  * A small bug is described in line 116. If we limit ourselfs not to
-  use parallel edges, it is not an issue. It can be easily solved,
-  for example, by giving each edge a unique identifier, but too much code
-  for this problem was already written as it is, so I'll just leave it
-  like that with this comment.
 */
 
 #ifndef __DIJKSTRA_GRAPH_HPP__
 #define __DIJKSTRA_GRAPH_HPP__
 
+#include "_Utility.hpp"
 #include "../Data Structures/Heap.hpp"
-#include "../Data Structures/Graph.hpp"
-#include <memory>
+#include "../Data Structures/WeightedGraph.hpp"
+
 #include <unordered_set>
 #include <unordered_map>
 #include <functional>
 #include <algorithm>
 #include <limits>
 
-class Edge {
-public:
-  int from;
-  int to;
 
-  explicit Edge() {}
-
-  explicit Edge(int from, int to) : from(from), to(to) {
-  }
-
-  friend bool operator==(const Edge& e1, const Edge& e2) {
-    return e1.from == e2.from && e1.to == e2.to;
-  }
-};
-
-template <class T>
-class HeapNode {
-public:
-  const Vertex<T>* v;
-  double dist;
-
-  HeapNode() {
-  }
-  // -1 is max value of std::size_t
-  HeapNode(const Vertex<T>& v, double initDist = std::numeric_limits<double>::max()) : v(&v), dist(initDist) {
-  }
-
-  friend bool operator<(const HeapNode& a, const HeapNode& b) {
-    return a.dist < b.dist;
-  }
-
-  friend bool operator==(const HeapNode& a, const HeapNode& b) {
-    return (a.dist == b.dist && a.v == b.v);
-  }
-
-  friend void swap(HeapNode& first, HeapNode& second) {
-    using std::swap;
-
-    swap(first.v, second.v);
-    swap(first.dist, second.dist);
-  }
-
-};
-
-// injecting hash specialization to std to enable hasing edges and heap nodes.
-namespace std {
-
-  // This hash function was chosen based on this discussion:
-  // https://stackoverflow.com/questions/20953390/what-is-the-fastest-hash-function-for-pointers
-  template <class T>
-  struct hash<HeapNode<T>> {
-    std::size_t operator()(const HeapNode<T>& e) const {
-      static const size_t shift = (size_t)log2(1 + sizeof(e.v));
-      return (size_t)(e.v) >> shift;
-    }
-  };
-
-  template<>
-  struct hash<Edge> {
-    std::size_t operator()(const Edge& e) const {
-      std::size_t h1 = std::hash<int>()(e.from);
-      std::size_t h2 = std::hash<int>()(e.to);
-
-      return ((h1 ^ (h2 << 1))); // combine
-    }
-  };
-}
+namespace Acamol { namespace Graph {
 
 template<class T>
-class DijkstraGraph : public Graph<T> {
-public:
-  typedef std::unique_ptr<DijkstraGraph<T>> SPForestPtr;
+std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, double>> dijkstra(const Acamol::DataStructures::WeightedGraph<T>& graph, int source) {
+  if (!graph.contains(source)) {
+    return { Acamol::DataStructures::WeightedGraph<T>(), std::unordered_map<int, double>() };  // C++11
+  }
 
-  void addEdge(int from, int to, double weight) {
-    Graph<T>::addEdge(from, to);
-    // also maps edge to its weight. the graph allows parallel edges, but
-    // edgeWeights map keeps only the minimal edge of parallel, as this is
-    // enough to solve the SSSP problem.
-    if (this->contains(from) && this->contains(to)) {
-      if (edgeWeights.find(Edge(from, to)) != edgeWeights.end()) {
-        edgeWeights[Edge(from, to)] = std::min(weight, edgeWeights[Edge(from, to)]);
-      } else {
-        edgeWeights[Edge(from, to)] = weight;
-      }
+  // the result graph
+  Acamol::DataStructures::WeightedGraph<T> forest = graph; // copy the graph
+
+  // Heap of vertices, sorted by distances from 's'.
+  Acamol::DataStructures::Heap<internal::HeapNode<T>> Q;
+
+  // mapping from vertices to their distance (or total weight)
+  std::unordered_map<int, double> vertexDist;
+
+  // marking of visited vertices
+  std::unordered_set<int> visited;
+
+  Q.push(internal::HeapNode<T>(graph.getVertex(source), 0));
+
+  // sets 's' distance to 0, and all other vertices to "infinity" if 's' is 
+  // not a vertex in the graph, all distances should be "infinity", and the
+  // graph is not connected.
+  internal::__initDistances(forest, source, vertexDist);  
+
+  // mapping of edges inserted to 'forest'. used to reduce time to find an edge,
+  // since WeightedGraph does not supply a way to get an edge.
+  std::unordered_map<int, int> edgeFromToMap;
+
+  // the graph we actually work on, and return, is a tree. so initially it
+  // doesn't have any edges and distances between any two different vertices
+  // is "infinity". once we preform a relaxation, we also add the edge.
+  forest.clearEdges();
+
+  while (!Q.empty()) {
+    internal::HeapNode<T> top = Q.top();
+    Q.pop();
+    int from = top.v->getName();
+
+    // if we visited this node, it means we already have a shorter path to it,
+    // so we can just ignore any future occurrences of this node.
+    if (visited.find(from) != visited.end()) {
+      continue;
     }
-  }
+    visited.insert(from);
 
-  void removeEdge(int from, int to) {
-    Graph<T>::removeEdge(from, to);
-    // Uh-oh! if there are parallel edges, we don't know the weight of the one
-    // that we don't remove. 
-    edgeWeights.erase(Edge(from, to));
-  }
+    for (auto& pair : top.v->getNeighbours()) {
+      Acamol::DataStructures::Vertex<T> * u = pair.second;
+      int to = u->getName();
+      double weight = graph.getWeight(from, to);
+      double alt = top.dist + weight;
 
-  double getDistance(int name) const {
-    if (!contains(name)) return -1;
-    return vertexDist.find(name)->second;
-  }
+      // check if relaxation is needed
+      if (alt < vertexDist[to]) {
 
-  // If the graph is connected, returns a tree of paths from each vertex
-  // to 's'. The result graph would store these distances as well
-  // (use getDistance() to access).
-  // If it is not connected, the result graph would be a forest. i.e. the
-  // it would be a disjoint union of trees: all reachable vertices from 's'
-  // would be one tree and each one of the other vertices would be a tree
-  // (in other words, an isolated vertex).
-  // If 's', the vertex to start from, is not in the graph, returns an empty
-  // graph.
-  //
-  // The result graph is returned as unique_ptr.
-  //
-  // 's' is the vertex to start from.
-  //
-  // NOTE: only works on a non-negative weights.
-  //
-  // TODO: add bigO analysis.
-  SPForestPtr getShortestPaths(int s) {
-    if (!contains(s)) {
-      return std::make_unique<DijkstraGraph<T>>();
-    }
+        // if 'u' is not relaxed for the first time, then the previous edge
+        // should be removed from 'forest'.
+        if (edgeFromToMap.find(to) != edgeFromToMap.end()) {
+          forest.removeEdge(to, edgeFromToMap[to]);
+          edgeFromToMap.erase(to);
+        }
+        edgeFromToMap[to] = from;
 
-    // the result graph.
-    SPForestPtr forest = std::make_unique<DijkstraGraph<T>>(*this);
+        vertexDist[to] = alt;
+        forest.addEdge(to, from, weight);
 
-    // Heap of vertices, sorted by distances from 's'.
-    Heap<HeapNode<T>> Q;
-    Q.push(HeapNode<T>(vertices[s], 0));
-    vertexDist[s] = 0;
-    std::unordered_set<int> visited;
-
-    // since the graph uses Adjacency list, this map simplfy and reduces the 
-    // time of finding an edge from one vertex to another.
-    std::unordered_map<int, int> edgeFromToMap;
-
-    // the graph we actually work on, and return, is tree. so initially it
-    // doesn't have any edges and distances between any two different vertices
-    // is "infinity". once we preform a relaxation, we also add the edge.
-    forest->clearEdges();
-    forest->edgeWeights.clear();
-    forest->setToNotRechable(s);
-
-    // if 's' is not a vertex in the graph, all distances should be "infinity",
-    // and the graph is not connected.
-
-    while (!Q.empty()) {
-      HeapNode<T> top = Q.top();
-      Q.pop();
-      int from = top.v->getName();
-      // if we visited this node, it means we already have a shorter path to it,
-      // so we can just ignore any future occurrences of this node.
-      if (visited.find(from) != visited.end()) {
-        continue;
-      }
-      visited.insert(from);
-
-      for (auto& u : top.v->getNeighbours()) {
-        int to = u->getName();
-        double weight = edgeWeights[Edge(from, to)];
-        double alt = top.dist + weight;
-
-        // check if relaxation is needed
-        if (alt < forest->vertexDist[to]) {
-
-          // if 'u' is not relaxed for the first time, then the previous edge
-          // should be removed from 'forest'.
-          if (edgeFromToMap.find(to) != edgeFromToMap.end()) {
-            forest->removeEdge(to, edgeFromToMap[to]);
-            edgeFromToMap.erase(to);
-          }
-          edgeFromToMap[to] = from;
-
-          forest->vertexDist[to] = alt;
-          forest->addEdge(to, from, weight);
-
-          // if the node we've just relaxed is discoverd for the first time
-          // we need to push it to the heap.
-          if (visited.find(to) == visited.end()) {
-            Q.push(HeapNode<T>(*u, alt));
-          }
+        // if the node we've just relaxed is discoverd for the first time
+        // we need to push it to the heap.
+        if (visited.find(to) == visited.end()) {
+          Q.push(internal::HeapNode<T>(*u, alt));
         }
       }
     }
-
-    return forest;
   }
 
-private:
+  return { forest, vertexDist };  // C++11
+}
 
-  // the graph technically allows identical edges, but since 'edges' is
-  // an unordered_set it stores only unique edges. i.e. it would not necessery
-  // store all edges in the graph. but this is not needed for this algorithm,
-  // because if there are identical edges only one of them is choosen.
-  std::unordered_map<Edge, double> edgeWeights;
+} }
 
-  // map of distances from a certain vertex to all other vertices.
-  // valid only if this graph was produced through getShortestPath()
-  std::unordered_map<int, double> vertexDist;
-
-  void setToNotRechable(int s) {
-    for (auto& pair : this->vertices) {
-      if (pair.second.getName() == s) {
-        vertexDist[s] = 0;
-      } else {
-        vertexDist[pair.second.getName()] = std::numeric_limits<double>::max();
-      }
-    }
-  }
-};
 
 #endif // !__SHORTESTPATHGRAPH_HPP__

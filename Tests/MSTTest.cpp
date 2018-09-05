@@ -1,36 +1,40 @@
 #include <gtest/gtest.h>
+
+#include "../Data Structures/WeightedGraph.hpp"
 #include "../Greedy Algorithms/MSTGraph.hpp"
+
+using namespace Acamol::DataStructures;
 
 namespace {
 
   TEST(MSTEdgeCases, EmptyTree) {
-    MSTGraph<int> g;
-    auto tree = g.getMST();
-    ASSERT_EQ(0, tree->getWeight());
-    ASSERT_EQ(0, tree->getNumOfEdges());
-    ASSERT_EQ(0, tree->getNumOfVertices());
+    WeightedGraph<int> g;
+    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    ASSERT_EQ(0, tree.getTotalWeight());
+    ASSERT_EQ(0, tree.getNumOfEdges());
+    ASSERT_EQ(0, tree.getNumOfVertices());
   }
 
   TEST(MSTEdgeCases, NoEdges) {
-    MSTGraph<int> g;
+    WeightedGraph<int> g;
     g.addVertex(0, 0);
     g.addVertex(1, 0);
-    auto tree = g.getMST();
-    ASSERT_EQ(0, tree->getNumOfVertices());
+    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    ASSERT_EQ(0, tree.getNumOfVertices());
   }
 
   TEST(MSTEdgeCases, NotConnected) {
-    MSTGraph<int> g;
+    WeightedGraph<int> g;
     g.addVertex(0, 0);
     g.addVertex(1, 0);
     g.addVertex(2, 0);
     g.addEdge(0, 1, 20);
-    auto tree = g.getMST();
-    ASSERT_EQ(0, tree->getNumOfVertices());
+    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    ASSERT_EQ(0, tree.getNumOfVertices());
   }
 
   TEST(MSTCorrectness, ExampeFromWiki) {
-    MSTGraph<int> g;
+    WeightedGraph<int> g;
 
     for (int i = 0; i <= 9; ++i) {
       g.addVertex(i, i);
@@ -59,12 +63,12 @@ namespace {
     g.addEdge(7, 9, 9);
     g.addEdge(8, 9, 9); 
 
-    auto tree = g.getMST();
-    ASSERT_EQ(38, tree->getWeight());
+    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    ASSERT_EQ(38, tree.getTotalWeight());
   }
 
   TEST(MSTCorrectness, K5) {
-    MSTGraph<int> g;
+    WeightedGraph<int> g;
 
     for (int i = 0; i <= 4; ++i) {
       g.addVertex(i, i);
@@ -80,8 +84,8 @@ namespace {
     g.addEdge(2, 3, 19);
     g.addEdge(2, 4, 14);
     g.addEdge(3, 4, 19);
-    auto tree = g.getMST();
+    auto tree = Acamol::Greedy::min_spanning_tree(g);
 
-    ASSERT_EQ(52, tree->getWeight());
+    ASSERT_EQ(52, tree.getTotalWeight());
   }
 } // namespace

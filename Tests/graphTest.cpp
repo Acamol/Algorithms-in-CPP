@@ -4,6 +4,8 @@
 #include "../Data Structures/Graph.hpp"
 #include <set>
 
+using namespace Acamol::DataStructures;
+
 namespace {
 
 TEST(GraphBasic, EmptyGraph) {
@@ -48,7 +50,7 @@ TEST(GraphBasic, CopyCtorAssignment) {
   ASSERT_EQ(g.getNumOfVertices(), copy.getNumOfVertices());
   copy.addEdge(1, 2);
   const Vertex<int>& v1 = copy.getVertex(1);
-  const Vertex<int> * adj = v1.getNeighbours().front();
+  const Vertex<int> * adj = v1.getNeighbours().begin()->second;
   ASSERT_EQ(2, adj->getName());
   const Vertex<int>& v2 = g.getVertex(2);
   ASSERT_EQ(0, v2.getInDegree());
@@ -64,7 +66,7 @@ TEST(GraphBasic, SimpleEdgeInsertion) {
   ASSERT_EQ(1, g.getNumOfEdges());
   const Vertex<int>& v = g.getVertex(0);
   for (auto vPtr : v.getNeighbours()) {
-    ASSERT_EQ(vPtr->getName(), 1); // only neighbour should be '1'
+    ASSERT_EQ(vPtr.second->getName(), 1); // only neighbour should be '1'
   }
 }
 
@@ -120,10 +122,10 @@ TEST_F(GraphBobTest, LotsOfEdgeInsertion) {
   g.addEdge(SIZE_OF_BOB_TEST - 1, 0);
 
   for (const Vertex<struct bob>& v : g) {
-    for (const Vertex<struct bob>* n : v.getNeighbours()) {
+    for (auto& n : v.getNeighbours()) {
       // v should only have one edge, so this for loop should have
       // only one iteration
-      ASSERT_EQ((v.getName() + 1) % SIZE_OF_BOB_TEST, n->getName());
+      ASSERT_EQ((v.getName() + 1) % SIZE_OF_BOB_TEST, n.second->getName());
     }
   }
 }
