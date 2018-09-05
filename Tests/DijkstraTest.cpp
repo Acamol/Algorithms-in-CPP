@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
+#include "../Data Structures/WeightedGraph.hpp"
 #include "../Graph/DijkstraGraph.hpp"
+
+using namespace Acamol::DataStructures;
 
 namespace {
  
@@ -21,20 +24,22 @@ protected:
     g.addEdge(4, 5, 2);
   }
  
-  DijkstraGraph<int> g;
+  WeightedGraph<int> g;
 };
 
 TEST_F(SPTest, SimpleCorrectness) {
-  auto SP = g.getShortestPaths(0);
-  ASSERT_EQ(5, SP->getNumOfEdges());
+  auto SP = Acamol::Graph::dijkstra(g, 0);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_EQ(5, graph.getNumOfEdges());
   double dist[] = { 0, 8, 5, 2, 11, 3 };
   for (int i = 0; i <= 5; ++i) {
-    ASSERT_EQ(dist[i], SP->getDistance(i));
+    ASSERT_EQ(dist[i], distances[i]);
   }
 }
 
 TEST(SP_TDD, ExampleFromWiki) {
-  DijkstraGraph<int> g;
+  WeightedGraph<int> g;
   for (int i = 1; i <= 6; ++i) {
     g.addVertex(i, i);
   }
@@ -58,11 +63,13 @@ TEST(SP_TDD, ExampleFromWiki) {
   g.addEdge(6, 3, 2);
   g.addEdge(6, 5, 9);
 
-  auto SP = g.getShortestPaths(1);
-  ASSERT_EQ(5, SP->getNumOfEdges());
+  auto SP = Acamol::Graph::dijkstra(g, 1);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_EQ(5, graph.getNumOfEdges());
   double dist[] = { 0, 7 ,9 ,20, 20, 11 };
   for (int i = 1; i <= 6; ++i) {
-    ASSERT_EQ(dist[i - 1], SP->getDistance(i));
+    ASSERT_EQ(dist[i - 1], distances[i]);
   }
 }
 

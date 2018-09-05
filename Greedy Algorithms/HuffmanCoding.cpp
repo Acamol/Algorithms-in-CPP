@@ -3,7 +3,9 @@
 #include <limits>
 #include <iostream>
 
+namespace Acamol { namespace Greedy {
 
+using namespace Acamol::DataStructures;
 /** Node and derived classes methods **/
 unsigned int Node::getFrequency() const {
   return frequency;
@@ -161,3 +163,5 @@ void HuffmanCodeDecoder::generateDecode(Node const * const root, const std::stri
     }
   }
 }
+
+} } // namespace

@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <algorithm>
 
+namespace Acamol { namespace DataStructures {
+
 namespace HeapUtil {
 
  template<class Key, class Compare = std::less<Key>>
@@ -168,5 +170,6 @@ class Heap {
 
 };
 
+} } // namespace
 
 #endif // !__HEAP_HPP__

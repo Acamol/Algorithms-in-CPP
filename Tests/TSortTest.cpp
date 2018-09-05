@@ -3,6 +3,8 @@
 
 #include "../Graph/TopologicalSortGraph.hpp"
 
+using namespace Acamol::DataStructures;
+
 namespace {
 
 class DAGTest : public ::testing::Test {
@@ -21,7 +23,7 @@ class DAGTest : public ::testing::Test {
     g.addEdge(3, 4);
   }
 
-  TopologicalSortGraph<int> g;
+  Graph<int> g;
 };
 
 class DAGFromWikiTest : public ::testing::Test {
@@ -47,7 +49,7 @@ protected:
     g.addEdge(8, 9);
   }
 
-  TopologicalSortGraph<int> g;
+  Graph<int> g;
 };
 
 class CyclicTest : public ::testing::Test {
@@ -67,43 +69,43 @@ class CyclicTest : public ::testing::Test {
     g.addEdge(4, 0);
   }
 
-  TopologicalSortGraph<int> g;
+  Graph<int> g;
 };
 
 TEST(TSortBasicEdgeCases, EmptyGraph) {
-  TopologicalSortGraph<int> g;
-  TopologicalSortGraph<int>::TopologicalSortPtr l = g.topologicalSort();
-  ASSERT_EQ(0, l->size());
+  Graph<int> g;
+  auto l = Acamol::Graph::topological_sort(g);
+  ASSERT_EQ(0, l.size());
 }
 
 TEST(TSortBasicEdgeCases, OneElementOnly) {
-  TopologicalSortGraph<int> g;
+  Graph<int> g;
   g.addVertex(0, 0);
-  TopologicalSortGraph<int>::TopologicalSortPtr l = g.topologicalSort();
-  ASSERT_EQ(1, l->size());
+  auto l = Acamol::Graph::topological_sort(g);
+  ASSERT_EQ(1, l.size());
 }
 
 TEST_F(CyclicTest, CyclicGraph) {
-  TopologicalSortGraph<int>::TopologicalSortPtr l = g.topologicalSort();
-  ASSERT_EQ(0, l->size());
+  auto l = Acamol::Graph::topological_sort(g);
+  ASSERT_EQ(0, l.size());
 
   // no longer cyclic
   g.removeEdge(4, 0);
-  l = g.topologicalSort();
-  ASSERT_EQ(6, l->size());
+  l = Acamol::Graph::topological_sort(g);
+  ASSERT_EQ(6, l.size());
 }
 
 TEST_F(DAGTest, TSortSimple) {
-  TopologicalSortGraph<int>::TopologicalSortPtr l = g.topologicalSort();
+  std::list<Vertex<int>> l = Acamol::Graph::topological_sort(g);
 
-  ASSERT_EQ(6, l->size());
+  ASSERT_EQ(6, l.size());
   int order[6];
   int i = 0;
-  for (auto& v : *l) {
+  for (auto& v : l) {
     order[v.getName()] = i++;
   }
 
-  for (i = 1; i < l->size(); ++i) {
+  for (i = 1; i < l.size(); ++i) {
     ASSERT_LT(order[0], order[i]);
   }
   
@@ -115,12 +117,12 @@ TEST_F(DAGTest, TSortSimple) {
 }
 
 TEST_F(DAGFromWikiTest, TSortStillSimple) {
-  TopologicalSortGraph<int>::TopologicalSortPtr l = g.topologicalSort();
+  auto l = Acamol::Graph::topological_sort(g);
 
-  ASSERT_EQ(8, l->size());
+  ASSERT_EQ(8, l.size());
   int order[12];
   int i = 0;
-  for (auto& v : *l) {
+  for (auto& v : l) {
     order[v.getName()] = i++;
   }
 

@@ -18,6 +18,8 @@
 #include <vector>
 #include <map>
 
+namespace Acamol { namespace Greedy {
+
  typedef std::vector<bool> Code;
  typedef std::map<char, Code> CodeMap;
 
@@ -98,5 +100,7 @@ private:
   
   void generateDecode(Node const * const root, const std::string& s);
 };
+
+} }
 
 #endif // !__HUFFMAN_CODING_HPP__

@@ -20,119 +20,85 @@
   Time complexity: O(|E|log|E|)=O(|E|log|V|).
 */
 
-#include "../Data Structures/Graph.hpp"
+#ifndef __MIN_SPANNING_TREE_HPP__
+#define __MIN_SPANNING_TREE_HPP__
+
+
+#include "../Data Structures/WeightedGraph.hpp"
 #include "../Data Structures/DisjointSet.hpp"
+
 #include <vector>
 #include <algorithm>
-#include <memory>
 
+namespace Acamol { namespace Greedy {
+
+// The actual algorithm implementation.
+//
+// Returns a unique_ptr to a new MSTGraph which is an MST of the graph, if
+// one exists. An empty graph otherwise.
+//
+// BigO analysis:
+// 1. Creating a disjoint set takes O(|V|).
+// 2. Creating a mapping between vertices to subsets takes O(|V|).
+// 3. Creating a new graph with no edges takes O(|V|).
+// 4. Creating a copy of all edges takes O(|E|).
+// 5. Sorting the edges takes O(|E|log|E|). 
+// 6. find and union operation takes O(log|V|), adding an edge takes O(1).
+//    The number of iterations is O(|E|), thus the loop takes
+//    O(|E|log|V|+|E|log|V|).
+//    
+// Since O(|E|)=O(|V|^2), overall we get O(|E|log|E|).
 template<class T>
-class MSTGraph : public Graph<T> {
- public:
-  typedef std::unique_ptr<MSTGraph<T>> MSTPtr;
+Acamol::DataStructures::WeightedGraph<T> min_spanning_tree(const Acamol::DataStructures::WeightedGraph<T>& graph) {
+  Acamol::DataStructures::WeightedGraph<T> tree;
 
-  explicit MSTGraph() : Graph<T>(), edges(), weight(0) {
+  // Creates |V| disjoint sets, with identifiers from 0 to |V|-1.
+  Acamol::DataStructures::DisjointSet sets(graph.getNumOfVertices());
+
+  // map from vertex identifier to set identifier
+  std::unordered_map<int, int> vertexToSet;
+  vertexToSet.reserve(graph.getNumOfVertices());  // optimization
+  auto it = graph.getVertices().begin();
+
+  // Defines the mapping between vertices to set identifiers
+  for (std::size_t i = 0; i < graph.getNumOfVertices(); ++i, ++it) {
+    vertexToSet[it->second.getName()] = i;
   }
 
-  void addEdge(int from, int to, int weight) {
-    if (this->contains(from) && this->contains(to)) {
-      // both vertices exists
-      Vertex<T>& v1 = vertices[from];
-      Vertex<T>& v2 = vertices[to];
-      v1.addNeighbour(&v2);
-      v2.addNeighbour(&v1);
-      ++numEdges;
-      this->weight += weight;
-      edges.push_back(Edge(from, to, weight));
-    }
+  std::vector<Edge> edgesCopy(graph.getEdges().begin(), graph.getEdges().end());
+  std::sort(edgesCopy.begin(), edgesCopy.end());
+
+  // insert all vertices to the future tree. no edges at the moment.
+  for (auto& pair : graph.getVertices()) {
+    tree.addVertex(pair.first, pair.second.getData());
   }
 
-  // The actual algorithm implementation.
-  //
-  // Returns a unique_ptr to a new MSTGraph which is an MST of the graph, if
-  // one exists. An empty graph otherwise.
-  //
-  // BigO analysis:
-  // 1. Creating a disjoint set takes O(|V|).
-  // 2. Creating a mapping between vertices to subsets takes O(|V|).
-  // 3. Creating a new graph with no edges takes O(|V|).
-  // 4. Creating a copy of all edges takes O(|E|).
-  // 5. Sorting the edges takes O(|E|log|E|). 
-  // 6. find and union operation takes O(log|V|), adding an edge takes O(1).
-  //    The number of iterations is O(|E|), thus the loop takes
-  //    O(|E|log|V|+|E|log|V|).
-  //    
-  // Since O(|E|)=O(|V|^2), overall we get O(|E|log|E|).
-  MSTPtr getMST() const {
-    MSTPtr tree = std::make_unique<MSTGraph<T>>();
+  // it is not a tree as long as |E| < |V| - 1
+  while (tree.getNumOfEdges() < tree.getNumOfVertices() - 1 && !edgesCopy.empty()) {
+    Edge& e = edgesCopy.back();
+    int setFrom = sets.find(vertexToSet[e.from]);
+    int setTo = sets.find(vertexToSet[e.to]);
 
-    // Creates |V| disjoint sets, with identifiers from 0 to |V|-1.
-    DisjointSet sets(this->getNumOfVertices());
-
-    // map from vertex identifier to set identifier
-    std::unordered_map<int, int> vertexToSet;
-    vertexToSet.reserve(this->getNumOfVertices()); // just optimization
-    auto it = this->vertices.begin();
-
-    // Defines the mapping between vertices to set identifiers
-    for (std::size_t i = 0; i < this->getNumOfVertices(); ++i, ++it) {
-      vertexToSet[it->second.getName()] = i;
+    // make sure the edge does not create a circle.
+    // if it does, it is not added to the future tree.
+    if (setFrom != setTo) {
+      sets.Union(setFrom, setTo);
+      tree.addEdge(e.from, e.to, e.weight);
     }
 
-    std::vector<Edge> edgesCopy = edges;
-    std::sort(edgesCopy.begin(), edgesCopy.end());
-
-    // insert all vertices to the future tree. no edges at the moment.
-    tree->vertices.reserve(this->getNumOfVertices());
-    for (auto& pair : this->vertices) {
-      tree->vertices[pair.first] = Vertex<T>(pair.second.getName(), pair.second.getData());
-    }
-
-    // it is not a tree as long as |E| < |V| - 1
-    while (tree->getNumOfEdges() < tree->getNumOfVertices() - 1 && !edgesCopy.empty()) {
-      Edge& e = edgesCopy.back();
-      int setFrom = sets.find(vertexToSet[e.from]);
-      int setTo = sets.find(vertexToSet[e.to]);
-
-      // make sure the edge does not create a circle.
-      // if it does, it is not added to the future tree.
-      if (setFrom != setTo) {
-        sets.Union(setFrom, setTo);
-        tree->addEdge(e.from, e.to, e.weight);
-      }
-
-      // pop the recent edge.
-      edgesCopy.pop_back();
-    }
-
-    // if it is not a tree yet, reset 'tree' to an empty graph.
-    if (tree->getNumOfEdges() < tree->getNumOfVertices() - 1) {
-      tree = std::make_unique<MSTGraph<T>>();
-    }
-
-    return tree;
+    // pop the recent edge.
+    edgesCopy.pop_back();
   }
 
-  int getWeight() const {
-    return weight;
+  // if it is not a tree yet, reset 'tree' to an empty graph.
+  if (tree.getNumOfEdges() < tree.getNumOfVertices() - 1) {
+    tree.clear();
+    tree.clearEdges();
   }
 
- private:
-  class Edge {
-  public:
-    explicit Edge(int from, int to, int weight)
-      : from(from), to(to), weight(weight) {
-    }
+  return tree;
+}
 
-    int from;
-    int to;
-    int weight;
+} }
 
-    friend bool operator<(const MSTGraph<T>::Edge& e1, const MSTGraph<T>::Edge& e2) {
-      return e1.weight > e2.weight;
-    }
-  };
-
-  std::vector<Edge> edges;
-  int weight;
-};
+#endif // !__MIN_SPANNING_TREE_HPP__

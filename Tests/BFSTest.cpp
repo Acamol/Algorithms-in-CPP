@@ -3,6 +3,8 @@
 
 #include "../Graph/BFSGraph.hpp"
 
+using namespace Acamol::DataStructures;
+
 namespace {
 
 class BFSGraphTest : public ::testing::Test {
@@ -41,23 +43,24 @@ protected:
     g.addEdge(4, 0);
   }
 
-  BFSGraph<int> g;
+  Graph<int> g;
 };
 
   TEST_F(BFSGraphTest, BFSTree) {
-    BFSGraph<int>::BFSTreePtr tree1 = g.BFS(0);
+    auto tree1 = Acamol::Graph::bfs(g, 0);
     // tree1 needs to be a spanning tree
     // if tree1 is indeed a spanning tree, then |E| = |V| - 1
-    ASSERT_EQ(tree1->getNumOfVertices(), 6);
-    ASSERT_EQ(tree1->getNumOfEdges(), 5);
+    ASSERT_EQ(tree1.getNumOfVertices(), 6);
+    ASSERT_EQ(tree1.getNumOfEdges(), 5);
 
     // vertex 5 has no adjacent vertices, so only vertex 5
     // should be in tree1 now
-    tree1 = g.BFS(5);
-    ASSERT_EQ(1, tree1->getNumOfVertices());
-    ASSERT_EQ(0, tree1->getNumOfEdges());
-    BFSGraph<int>::Iterator it = tree1->begin();
+    tree1 = Acamol::Graph::bfs(g, 5);
+    ASSERT_EQ(1, tree1.getNumOfVertices());
+    ASSERT_EQ(0, tree1.getNumOfEdges());
+    Graph<int>::Iterator it = tree1.begin();
     ASSERT_EQ(5, it->getName());
   }
+
 
 } // namespace

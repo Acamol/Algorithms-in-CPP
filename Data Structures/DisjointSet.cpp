@@ -1,5 +1,7 @@
 #include "DisjointSet.hpp"
 
+namespace Acamol { namespace DataStructures {
+
 #define NO_PARENT -1
 #define NO_SET -2
 
@@ -61,3 +63,5 @@ int DisjointSet::Union(int set1, int set2) {
   // 'set1' abd 'set2' are actually in the same subset
   return set1;
 }
+
+} }

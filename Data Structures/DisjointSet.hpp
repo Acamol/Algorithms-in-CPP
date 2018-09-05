@@ -15,6 +15,8 @@
 
 #include <vector>
 
+namespace Acamol { namespace DataStructures {
+
 class DisjointSet {
  public:
   // Construct an empty disjoint set.
@@ -43,5 +45,7 @@ class DisjointSet {
   std::vector<int> parent;
   std::vector<int> size;
 };
+
+} } // namespace
 
 #endif // !__DISJOINT_SET_HPP__

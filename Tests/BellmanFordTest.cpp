@@ -1,13 +1,15 @@
 // Google test headers
 #include <gtest/gtest.h>
 
+#include "../Data Structures/WeightedGraph.hpp"
 #include "../Graph/BellmanFordGraph.hpp"
 
+using namespace Acamol::DataStructures;
 
 namespace {
 
 TEST(BFTest, SimpleCorrectness) {
-  BellmanFordGraph<int> g;
+  WeightedGraph<int> g;
   for (int i = 0; i <= 5; ++i) {
     g.addVertex(i, i);
   }
@@ -21,16 +23,18 @@ TEST(BFTest, SimpleCorrectness) {
   g.addEdge(5, 4, -2);
   g.addEdge(2, 5, 2);
 
-  auto SP = g.getShortestPaths(0);
-  ASSERT_EQ(5, SP->getNumOfEdges());
+  auto SP = Acamol::Graph::bellman_ford(g, 0);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_EQ(5, graph.getNumOfEdges());
   double dist[] = { 0, 8, 5, 9, 5, 7 };
   for (int i = 0; i <= 5; ++i) {
-    ASSERT_EQ(dist[i], SP->getDistance(i));
+    ASSERT_EQ(dist[i], distances[i]);
   }
 }
 
 TEST(BFTest, SimpleCorrectness2) {
-  BellmanFordGraph<int> g;
+  WeightedGraph<int> g;
   for (int i = 0; i <= 4; ++i) {
     g.addVertex(i, i);
   }
@@ -44,16 +48,18 @@ TEST(BFTest, SimpleCorrectness2) {
   g.addEdge(3, 2, 5);
   g.addEdge(4, 3, -3);
 
-  auto SP = g.getShortestPaths(0);
-  ASSERT_EQ(4, SP->getNumOfEdges());
+  auto SP = Acamol::Graph::bellman_ford(g, 0);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_EQ(4, graph.getNumOfEdges());
   double dist[] = { 0, -1, 2, -2, 1};
   for (int i = 0; i <= 4; ++i) {
-    ASSERT_EQ(dist[i], SP->getDistance(i));
+    ASSERT_EQ(dist[i], distances[i]);
   }
 }
 
 TEST(BellmanFord_TDD, ExampleFromWiki) {
-  BellmanFordGraph<int> g;
+  WeightedGraph<int> g;
   for (int i = 1; i <= 6; ++i) {
     g.addVertex(i, i);
   }
@@ -77,16 +83,18 @@ TEST(BellmanFord_TDD, ExampleFromWiki) {
   g.addEdge(6, 3, 2);
   g.addEdge(6, 5, 9);
 
-  auto SP = g.getShortestPaths(1);
-  ASSERT_EQ(5, SP->getNumOfEdges());
+  auto SP = Acamol::Graph::bellman_ford(g, 1);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_EQ(5, graph.getNumOfEdges());
   double dist[] = { 0, 7 ,9 ,20, 20, 11 };
   for (int i = 1; i <= 6; ++i) {
-    ASSERT_EQ(dist[i - 1], SP->getDistance(i));
+    ASSERT_EQ(dist[i - 1], distances[i]);
   }
 }
 
 TEST(BFTest, DetectNegativeCycle) {
-  BellmanFordGraph<int> g;
+  WeightedGraph<int> g;
   for (int i = 1; i <= 8; ++i) {
     g.addVertex(i, i);
   }
@@ -104,9 +112,12 @@ TEST(BFTest, DetectNegativeCycle) {
   g.addEdge(7, 6, 2);
   g.addEdge(7, 8, 2);
   g.addEdge(8, 5, -2);
-  auto SP = g.getShortestPaths(1);
-  ASSERT_EQ(0, SP->getNumOfEdges());
-  ASSERT_EQ(0, SP->getNumOfVertices());
+
+  auto SP = Acamol::Graph::bellman_ford(g, 1);
+  auto graph = SP.first;
+
+  ASSERT_EQ(0, graph.getNumOfEdges());
+  ASSERT_EQ(0, graph.getNumOfVertices());
 }
 
 } // namespace
