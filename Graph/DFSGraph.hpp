@@ -1,6 +1,6 @@
 /*
-The definition of Breadth-First Search can be found here:
-https://en.wikipedia.org/wiki/Breadth-first_search
+The definition of Depth-First Search can be found here:
+https://en.wikipedia.org/wiki/Depth-first_search
 
 The complexity is O(V+E).
 */
