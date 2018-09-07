@@ -7,8 +7,6 @@
 #include <unordered_map>
 #include <functional> // hash specialization
 
-// TODO: implement move constructors
-
 namespace Acamol { namespace DataStructures {
 
 class Edge {

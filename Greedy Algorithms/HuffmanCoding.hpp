@@ -2,9 +2,9 @@
   Information about the algorithm and the problem it solves here:
   https://en.wikipedia.org/wiki/Huffman_coding
 
-  Basically, A rip-off from this great code:
+  Basically, A rip-off from this code:
   https://rosettacode.org/wiki/Huffman_coding
-  I wanted to experience coding it anyway. Also included a decoder, mainly for
+  I wanted to code it anyway. Also included a decoder, mainly for
   testing the encoder.
 
   This implementation encodes only std::strings, but it can be easily expanded to

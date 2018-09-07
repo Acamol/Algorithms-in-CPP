@@ -9,7 +9,6 @@
 #ifndef __GRAPH_HPP__
 #define __GRAPH_HPP__
 
-#include <list>
 #include <unordered_map>
 #include <utility>
 
@@ -32,7 +31,6 @@ public:
 
   void addNeighbour(Vertex<T>* neighbour) {
     neighbours[neighbour->getName()] = neighbour;
-    //neighbours.push_back(neighbour);
     ++(neighbour->inDegree);
   }
 
@@ -125,6 +123,9 @@ class Graph {
     swap(*this, g);
     
     return *this;
+  }
+
+  Graph(Graph&& other) : vertices(std::move(other.vertices)), numEdges(other.numEdges) {
   }
 
   /*
