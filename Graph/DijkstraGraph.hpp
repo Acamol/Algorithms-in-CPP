@@ -20,19 +20,19 @@
 #include <limits>
 
 
-namespace Acamol { namespace Graph {
+namespace Acamol {
 
 template<class T>
-std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, double>> dijkstra(const Acamol::DataStructures::WeightedGraph<T>& graph, int source) {
+std::pair<WeightedGraph<T>, std::unordered_map<int, double>> dijkstra(const WeightedGraph<T>& graph, int source) {
   if (!graph.contains(source)) {
-    return { Acamol::DataStructures::WeightedGraph<T>(), std::unordered_map<int, double>() };  // C++11
+    return { WeightedGraph<T>(), std::unordered_map<int, double>() };  // C++11
   }
 
   // the result graph
-  Acamol::DataStructures::WeightedGraph<T> forest = graph; // copy the graph
+  WeightedGraph<T> forest = graph; // copy the graph
 
   // Heap of vertices, sorted by distances from 's'.
-  Acamol::DataStructures::Heap<internal::HeapNode<T>> Q;
+  Heap<internal::HeapNode<T>> Q;
 
   // mapping from vertices to their distance (or total weight)
   std::unordered_map<int, double> vertexDist;
@@ -69,7 +69,7 @@ std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, doub
     visited.insert(from);
 
     for (auto& pair : top.v->getNeighbours()) {
-      Acamol::DataStructures::Vertex<T> * u = pair.second;
+      Vertex<T> * u = pair.second;
       int to = u->getName();
       double weight = graph.getWeight(from, to);
       double alt = top.dist + weight;
@@ -100,7 +100,6 @@ std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, doub
   return { forest, vertexDist };  // C++11
 }
 
-} }
-
+} 
 
 #endif // !__SHORTESTPATHGRAPH_HPP__

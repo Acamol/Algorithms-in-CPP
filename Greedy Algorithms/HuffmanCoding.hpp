@@ -18,10 +18,10 @@
 #include <vector>
 #include <map>
 
-namespace Acamol { namespace Greedy {
+namespace Acamol {
 
- typedef std::vector<bool> Code;
- typedef std::map<char, Code> CodeMap;
+ using Code = std::vector<bool>;
+ using CodeMap = std::map<char, Code>;
 
  class Node {
    public:
@@ -101,6 +101,6 @@ private:
   void generateDecode(Node const * const root, const std::string& s);
 };
 
-} }
+}
 
 #endif // !__HUFFMAN_CODING_HPP__

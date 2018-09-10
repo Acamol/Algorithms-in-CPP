@@ -14,7 +14,7 @@ The complexity is O(V+E).
 #include <stack>
 #include <memory>
 
-namespace Acamol { namespace Graph {
+namespace Acamol { 
 
 /*
     Returns a unique_ptr a Graph representation of a DFS tree whose root is
@@ -58,11 +58,11 @@ namespace Acamol { namespace Graph {
 */
 
 template<class T>
-Acamol::DataStructures::Graph<T> dfs(const Acamol::DataStructures::Graph<T>& graph, int source) {
-  Acamol::DataStructures::Graph<T> tree;
+Graph<T> dfs(const Graph<T>& graph, int source) {
+  Graph<T> tree;
   if (!graph.contains(source)) return tree;
 
-  const Acamol::DataStructures::Vertex<int>& start = graph.getVertex(source);
+  const Vertex<int>& start = graph.getVertex(source);
   std::unordered_set<int> discovered;
   std::stack<const Vertex<T>*> S;
 
@@ -70,7 +70,7 @@ Acamol::DataStructures::Graph<T> dfs(const Acamol::DataStructures::Graph<T>& gra
   tree.addVertex(start.getName(), start.getData());
 
   while (!S.empty()) {
-    const Acamol::DataStructures::Vertex<int> * curr = S.top();
+    const Vertex<int> * curr = S.top();
     S.pop();
 
     // check if curr was not discovered
@@ -79,7 +79,7 @@ Acamol::DataStructures::Graph<T> dfs(const Acamol::DataStructures::Graph<T>& gra
       discovered.insert(curr->getName());
 
       for (auto& pair : curr->getNeighbours()) {
-        Acamol::DataStructures::Vertex<T> * v = pair.second;
+        Vertex<T> * v = pair.second;
         if (!tree.contains(v->getName())) {
           S.push(v);
           tree.addVertex(v->getName(), v->getData());
@@ -91,6 +91,6 @@ Acamol::DataStructures::Graph<T> dfs(const Acamol::DataStructures::Graph<T>& gra
   return tree;
 }
 
-} }
+} // namespace
 
 #endif // !__DFSGRAPH_HPP__

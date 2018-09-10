@@ -12,7 +12,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace Acamol { namespace DataStructures {
+namespace Acamol {
 
 template<class T>
 class Vertex {
@@ -150,7 +150,7 @@ class Graph {
       Vertex<T>& v1 = vertices[name1];
       Vertex<T>& v2 = vertices[name2];
 
-      // allow only to add edge once
+      // do not allow parallel edges - this is not a multigraph
       if (v1.getNeighbours().find(name2) == v1.getNeighbours().end()) {
         v1.addNeighbour(&v2);
         ++numEdges;
@@ -187,21 +187,17 @@ class Graph {
   }
 
   /*
+  Complexity: constant
+  */
+  Vertex<T>& getVertex(int name) {
+    return const_cast<Vertex<T>&>(static_cast<const Graph*>(this)->getVertex(name));
+  }
+
+  /*
     Complexity: constant
   */
   const vMap& getVertices() const {
     return vertices;
-  }
-
-  /*
-  Complexity: constant
-  */
-  Vertex<T>& getVertex(int name) {
-    if (!contains(name)) {
-      throw std::logic_error("\ngetVertex::Tried to get a vertex that does not exist.\n");
-    }
-
-    return vertices.find(name)->second;
   }
 
   /*
@@ -244,8 +240,15 @@ class Graph {
         std::cout << v.getData() << "\n";
       }
   */
+
   class Iterator {
    public:
+    using difference_type = ptrdiff_t;
+    using value_type = Vertex<T>;
+    using reference = const Vertex<T>&;
+    using pointer = const Vertex<T>*;
+    using iterator_category = std::forward_iterator_tag;
+    
     Iterator & operator++() {
       ++it;
       return *this;
@@ -277,7 +280,7 @@ class Graph {
       : graph(graph), it(it) {
     }
   };
-
+  
   Iterator begin() {
     return Iterator(this, vertices.begin());
   }
@@ -291,6 +294,6 @@ class Graph {
   std::size_t numEdges;
 };
 
-} } // namespace
+} // namespace
 
 #endif // !__GRAPH_HPP__

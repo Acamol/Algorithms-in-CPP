@@ -13,7 +13,7 @@ The complexity is O(V+E).
 #include <queue>
 #include <memory>
 
-namespace Acamol { namespace Graph {
+namespace Acamol {
 
 /*
   Returns a unique_ptr to a Graph representation of a BFS tree whose root
@@ -57,11 +57,11 @@ namespace Acamol { namespace Graph {
 */
 
 template<class T>
-Acamol::DataStructures::Graph<T> bfs(const Acamol::DataStructures::Graph<T>& graph, int source) {
-  Acamol::DataStructures::Graph<T> tree;
+Graph<T> bfs(const Graph<T>& graph, int source) {
+  Graph<T> tree;
   if (!graph.contains(source)) return tree;
 
-  const Acamol::DataStructures::Vertex<int>& start = graph.getVertex(source);
+  const Vertex<int>& start = graph.getVertex(source);
   std::unordered_set<int> discovered;
   std::queue<const Vertex<int>*> Q;
 
@@ -69,7 +69,7 @@ Acamol::DataStructures::Graph<T> bfs(const Acamol::DataStructures::Graph<T>& gra
   tree.addVertex(start.getName(), start.getData());
 
   while (!Q.empty()) {
-    const Acamol::DataStructures::Vertex<int> * curr = Q.front();
+    const Vertex<int> * curr = Q.front();
     Q.pop();
 
     // check if curr was not discovered
@@ -78,7 +78,7 @@ Acamol::DataStructures::Graph<T> bfs(const Acamol::DataStructures::Graph<T>& gra
       discovered.insert(curr->getName());
 
       for (auto& pair : curr->getNeighbours()) {
-        Acamol::DataStructures::Vertex<T> * v = pair.second;
+        Vertex<T> * v = pair.second;
         if (!tree.contains(v->getName())) {
           Q.push(v);
           tree.addVertex(v->getName(), v->getData());
@@ -91,5 +91,5 @@ Acamol::DataStructures::Graph<T> bfs(const Acamol::DataStructures::Graph<T>& gra
   return tree;
 }
 
-} }
+}
 #endif // !__BFSGRAPH_HPP__

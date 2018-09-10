@@ -25,20 +25,20 @@
 #include <stack>
 #include <memory>
 
-namespace Acamol { namespace Graph {
+namespace Acamol {
 
 template<class T>
-std::list<Acamol::DataStructures::Vertex<T>> topological_sort(const Acamol::DataStructures::Graph<T>& graph) {
+std::list<Vertex<T>> topological_sort(const Graph<T>& graph) {
   // we don't want to ruin our graph, but some changes to the graph are
   // needed for the algorithm - i.e. removing edges.
-  Acamol::DataStructures::Graph<T> copy = graph;
+  Graph<T> copy = graph;
 
   // find all sources in the graph. the definition of source is a vertex
   // which its indegree is 0.
   auto sources = internal::__findSources(copy);
 
   // the list that will hold the topological sort.
-  std::list<Acamol::DataStructures::Vertex<T>> result;
+  std::list<Vertex<T>> result;
 
   // to indicate how many vertices in total were added to the sources list.
   // there's a topological sort iff at some point each vertex is or became
@@ -47,15 +47,15 @@ std::list<Acamol::DataStructures::Vertex<T>> topological_sort(const Acamol::Data
   std::size_t k = 0;
   while (!sources.empty()) {
     ++k;
-    const Acamol::DataStructures::Vertex<T>& source = *sources.front();
+    const Vertex<T>& source = *sources.front();
     sources.pop_front();
     // insert the current source to the topological order.
-    result.push_back(Acamol::DataStructures::Vertex<T>(source.getName(), source.getData()));
+    result.push_back(Vertex<T>(source.getName(), source.getData()));
 
     // remove all outgoing edges from the current source
-    const Acamol::DataStructures::Vertex<T>::NeighboursList& sourceNeighbours = source.getNeighbours();
+    const Vertex<T>::NeighboursList& sourceNeighbours = source.getNeighbours();
     for (auto it = sourceNeighbours.begin(); it != sourceNeighbours.end(); it = sourceNeighbours.begin()) {
-      const Acamol::DataStructures::Vertex<T>* v = (*it).second;
+      const Vertex<T>* v = (*it).second;
       // if v's indegree is 1, after removing 'source' from the graph, v's
       // indegree will be 0, which makes him a new source.
       if (v->getInDegree() == 1) {
@@ -76,6 +76,6 @@ std::list<Acamol::DataStructures::Vertex<T>> topological_sort(const Acamol::Data
   return result;
 }
 
-} } // namespace
+}  // namespace
 
 #endif // !__TOPOLOGICAL_SORT__

@@ -1,9 +1,9 @@
 //Google Test headers
 #include <gtest/gtest.h>
 
-#include "../Graph/DFSGraph.hpp"
+#include "DFSGraph.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
 
@@ -47,7 +47,7 @@ protected:
 };
 
   TEST_F(DFSGraphTest, DFSTree) {
-    auto tree1 = Acamol::Graph::dfs(g, 0);
+    auto tree1 = dfs(g, 0);
     // tree1 needs to be a spanning tree
     // if tree1 is indeed a spanning tree, then |E| = |V| - 1
     ASSERT_EQ(tree1.getNumOfVertices(), 6);
@@ -55,7 +55,7 @@ protected:
 
     // vertex 5 has no adjacent vertices, so only vertex 5
     // should be in tree1 now
-    tree1 = Acamol::Graph::dfs(g, 5);
+    tree1 = dfs(g, 5);
     ASSERT_EQ(1, tree1.getNumOfVertices());
     ASSERT_EQ(0, tree1.getNumOfEdges());
     Graph<int>::Iterator it = tree1.begin();

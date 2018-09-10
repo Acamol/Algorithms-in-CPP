@@ -23,7 +23,7 @@
 
 #include <unordered_map>
 
-namespace Acamol { namespace Graph {
+namespace Acamol {
 
 // If the graph contains a negative-weight cycle, returns an empty graph.
 // If the graph is connected, returns a tree of paths from each vertex
@@ -40,12 +40,12 @@ namespace Acamol { namespace Graph {
 //
 // TODO: add bigO analysis.
 template<class T>
-std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, double>> bellman_ford(const Acamol::DataStructures::WeightedGraph<T>& graph, int source) {
+std::pair<WeightedGraph<T>, std::unordered_map<int, double>> bellman_ford(const WeightedGraph<T>& graph, int source) {
   if (!graph.contains(source)) {
-    return { Acamol::DataStructures::WeightedGraph<T>(), std::unordered_map<int, double>() };
+    return { WeightedGraph<T>(), std::unordered_map<int, double>() };
   }
 
-  Acamol::DataStructures::WeightedGraph<T> forest = graph;
+  WeightedGraph<T> forest = graph;
 
   // since the graph uses Adjacency list, this map simplfy and reduces the 
   // time of finding an edge from one vertex to another.
@@ -93,13 +93,13 @@ std::pair<Acamol::DataStructures::WeightedGraph<T>, std::unordered_map<int, doub
   // we have a negative-weight cycle.
   for (auto& e : graph.getEdges()) {
     if (vertexDist[e.to] > vertexDist[e.from] + e.weight) {
-      return { Acamol::DataStructures::WeightedGraph<T>(), std::unordered_map<int, double>() };
+      return { WeightedGraph<T>(), std::unordered_map<int, double>() };
     }
   }
 
   return { forest, vertexDist };
 }
 
-} }
+}
 
 #endif // !__BELLMAN_FORD_HPP__

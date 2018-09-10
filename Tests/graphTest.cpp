@@ -1,10 +1,10 @@
 // Google Test headers
 #include <gtest/gtest.h> 
 
-#include "../Data Structures/Graph.hpp"
+#include "Graph.hpp"
 #include <set>
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
 

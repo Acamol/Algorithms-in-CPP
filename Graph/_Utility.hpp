@@ -5,10 +5,10 @@
 
 #include <limits>
 
-namespace Acamol { namespace Graph { namespace internal {
+namespace Acamol { namespace internal {
   
 template<class T>
-void __initDistances(Acamol::DataStructures::WeightedGraph<T>& graph, int s, std::unordered_map<int, double>& distances) {
+void __initDistances(WeightedGraph<T>& graph, int s, std::unordered_map<int, double>& distances) {
   for (auto& pair : graph.getVertices()) {
     if (pair.second.getName() == s) {
       distances[s] = 0;
@@ -19,8 +19,8 @@ void __initDistances(Acamol::DataStructures::WeightedGraph<T>& graph, int s, std
 }
 
 template<class T>
-static std::list<const Acamol::DataStructures::Vertex<T>*> __findSources(const Acamol::DataStructures::Graph<T>& graph) {
-  std::list<const Acamol::DataStructures::Vertex<T>*> sources;
+static std::list<const Vertex<T>*> __findSources(const Graph<T>& graph) {
+  std::list<const Vertex<T>*> sources;
   for (auto& pair : graph.getVertices()) {
     const Vertex<T>& v = pair.second;
     if (v.getInDegree() == 0) {
@@ -35,13 +35,13 @@ static std::list<const Acamol::DataStructures::Vertex<T>*> __findSources(const A
 template <class T>
 class HeapNode {
 public:
-  const Acamol::DataStructures::Vertex<T>* v;
+  const Vertex<T>* v;
   double dist;
 
   HeapNode() {
   }
 
-  HeapNode(const Acamol::DataStructures::Vertex<T>& v, double initDist = std::numeric_limits<double>::max()) : v(&v), dist(initDist) {
+  HeapNode(const Vertex<T>& v, double initDist = std::numeric_limits<double>::max()) : v(&v), dist(initDist) {
   }
 
   friend bool operator<(const HeapNode& a, const HeapNode& b) {
@@ -60,14 +60,14 @@ public:
   }
 
 };
-  } } } // namespace
+  } }  // namespace
 
 namespace std {
   // This hash function was chosen based on this discussion:
   // https://stackoverflow.com/questions/20953390/what-is-the-fastest-hash-function-for-pointers
   template <class T>
-  struct hash<Acamol::Graph::internal::HeapNode<T>> {
-    std::size_t operator()(const Acamol::Graph::internal::HeapNode<T>& e) const {
+  struct hash<Acamol::internal::HeapNode<T>> {
+    std::size_t operator()(const Acamol::internal::HeapNode<T>& e) const {
       static const size_t shift = (size_t)log2(1 + sizeof(e.v));
       return (size_t)(e.v) >> shift;
     }
