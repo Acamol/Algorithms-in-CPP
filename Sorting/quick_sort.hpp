@@ -14,7 +14,7 @@ template<class It>
 using value_type_t = typename std::iterator_traits<It>::value_type;
 
 namespace internal {
-  template<class InputIt, class Compare = std::less<value_type_t<InputIt>>s>
+  template<class InputIt, class Compare = std::less<value_type_t<InputIt>>>
   value_type_t<InputIt> __median_of_three(InputIt first, InputIt last, Compare cmp = Compare{}) {
     const std::size_t n = std::distance(first, last) - 1;
     std::default_random_engine g;
