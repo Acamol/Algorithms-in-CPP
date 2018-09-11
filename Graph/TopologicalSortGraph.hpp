@@ -53,7 +53,7 @@ std::list<Vertex<T>> topological_sort(const Graph<T>& graph) {
     result.push_back(Vertex<T>(source.getName(), source.getData()));
 
     // remove all outgoing edges from the current source
-    const Vertex<T>::NeighboursList& sourceNeighbours = source.getNeighbours();
+    const typename Vertex<T>::NeighboursList& sourceNeighbours = source.getNeighbours();
     for (auto it = sourceNeighbours.begin(); it != sourceNeighbours.end(); it = sourceNeighbours.begin()) {
       const Vertex<T>* v = (*it).second;
       // if v's indegree is 1, after removing 'source' from the graph, v's
