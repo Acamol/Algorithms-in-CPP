@@ -40,10 +40,10 @@ message(STATUS "Building with the following extra flags: ${CMAKE_CXX_FLAGS}")
 # --------------------------------------------------------------------------------
 # We make sure that CMake sees all the files.
 include_directories(
-    ${PROJECT_SOURCE_DIR}/"Data\ Structures"
-    ${PROJECT_SOURCE_DIR}/"Dynamic\ Programming"
+    ${PROJECT_SOURCE_DIR}/Data\ Structures
+    ${PROJECT_SOURCE_DIR}/Dynamic\ Programming
     ${PROJECT_SOURCE_DIR}/Graph
-    ${PROJECT_SOURCE_DIR}/"Greedy\ Algorithms"
+    ${PROJECT_SOURCE_DIR}/Greedy\ Algorithms
     ${PROJECT_SOURCE_DIR}/Sorting
     ${PROJECT_SOURCE_DIR}/Tests
     ${PROJECT_SOURCE_DIR}/external/googletest/googletest
