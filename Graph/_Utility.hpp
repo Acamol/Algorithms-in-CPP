@@ -3,7 +3,9 @@
 
 #include "../Data Structures/WeightedGraph.hpp"
 
-#include <limits>
+#include <limits>  // numeric_limits 
+#include <cmath>  // log2
+#include <list>
 
 namespace Acamol { namespace internal {
   

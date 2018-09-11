@@ -95,7 +95,7 @@ class WeightedGraph : public Graph<T> {
   }
 
   bool setWeight(int from, int to, double weight) {
-    if (edges.find(internal::Edge(from, to) != edges.end())) {
+    if (edges.find(internal::Edge(from, to)) != edges.end()) {
       edges.find(internal::Edge(from, to))->weight = weight;
       return true;
     }
