@@ -255,7 +255,6 @@ class Graph {
     }
 
     bool operator==(const Iterator& it) const {
-      _ASSERT(graph == it.graph);
       return (this->it == it.it);
     }
 
