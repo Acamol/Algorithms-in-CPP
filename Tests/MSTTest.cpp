@@ -1,15 +1,15 @@
 #include <gtest/gtest.h>
 
-#include "../Data Structures/WeightedGraph.hpp"
-#include "../Greedy Algorithms/MSTGraph.hpp"
+#include "WeightedGraph.hpp"
+#include "min_spanning_tree.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
 
   TEST(MSTEdgeCases, EmptyTree) {
     WeightedGraph<int> g;
-    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    auto tree = min_spanning_tree(g);
     ASSERT_EQ(0, tree.getTotalWeight());
     ASSERT_EQ(0, tree.getNumOfEdges());
     ASSERT_EQ(0, tree.getNumOfVertices());
@@ -19,7 +19,7 @@ namespace {
     WeightedGraph<int> g;
     g.addVertex(0, 0);
     g.addVertex(1, 0);
-    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    auto tree = min_spanning_tree(g);
     ASSERT_EQ(0, tree.getNumOfVertices());
   }
 
@@ -29,7 +29,7 @@ namespace {
     g.addVertex(1, 0);
     g.addVertex(2, 0);
     g.addEdge(0, 1, 20);
-    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    auto tree = min_spanning_tree(g);
     ASSERT_EQ(0, tree.getNumOfVertices());
   }
 
@@ -63,7 +63,7 @@ namespace {
     g.addEdge(7, 9, 9);
     g.addEdge(8, 9, 9); 
 
-    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    auto tree = min_spanning_tree(g);
     ASSERT_EQ(38, tree.getTotalWeight());
   }
 
@@ -84,7 +84,7 @@ namespace {
     g.addEdge(2, 3, 19);
     g.addEdge(2, 4, 14);
     g.addEdge(3, 4, 19);
-    auto tree = Acamol::Greedy::min_spanning_tree(g);
+    auto tree = min_spanning_tree(g);
 
     ASSERT_EQ(52, tree.getTotalWeight());
   }

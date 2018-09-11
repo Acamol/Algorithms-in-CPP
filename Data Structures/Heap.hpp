@@ -5,9 +5,9 @@
 #include <unordered_map>
 #include <algorithm>
 
-namespace Acamol { namespace DataStructures {
+namespace Acamol {
 
-namespace HeapUtil {
+namespace internal {
 
  template<class Key, class Compare = std::less<Key>>
 class Node {
@@ -26,7 +26,7 @@ class Node {
   }
 };
 
-} // HeapUtil
+} // namespace internal
 
 template<class Key, class Compare = std::less<Key>>
 class Heap {
@@ -37,7 +37,7 @@ class Heap {
   explicit Heap(const std::vector<Key>& items) {
     heap.reserve(items.size());
     for (auto& key : items) {
-      heap.push_back(HeapUtil::Node<Key, Compare>(key));
+      heap.push_back(internal::Node<Key, Compare>(key));
     }
     heapify();
   }
@@ -45,7 +45,7 @@ class Heap {
   template<class Iterator>
   explicit Heap(Iterator first, Iterator last) {
     while (first != last) {
-      heap.push_back(HeapUtil::Node<Key, Compare>(*first));
+      heap.push_back(internal::Node<Key, Compare>(*first));
       ++first;
     }
 
@@ -73,7 +73,7 @@ class Heap {
   }
 
   void push(const Key& k) {
-    heap.push_back(HeapUtil::Node<Key, Compare>(k));
+    heap.push_back(internal::Node<Key, Compare>(k));
     siftUp(heap.size() - 1);
   }
 
@@ -104,13 +104,11 @@ class Heap {
     return true;
   }
 
-  HeapUtil::Node<Key, Compare>& getLeftSon(std::size_t pos) {
-    //assert(hasLeftSon(pos));
+  internal::Node<Key, Compare>& getLeftSon(std::size_t pos) {
     return heap[pos * 2 + 1];
   }
 
-  HeapUtil::Node<Key, Compare>& getRightSon(std::size_t pos) {
-    //assert(hasRightSon(pos));
+  internal::Node<Key, Compare>& getRightSon(std::size_t pos) {
     return heap[pos * 2 + 2];
   }
 
@@ -166,10 +164,10 @@ class Heap {
     }
   }
 
-  std::vector<HeapUtil::Node<Key, Compare>> heap;
+  std::vector<internal::Node<Key, Compare>> heap;
 
 };
 
-} } // namespace
+}  // namespace
 
 #endif // !__HEAP_HPP__

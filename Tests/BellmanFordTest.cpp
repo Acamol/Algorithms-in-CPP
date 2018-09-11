@@ -1,10 +1,10 @@
 // Google test headers
 #include <gtest/gtest.h>
 
-#include "../Data Structures/WeightedGraph.hpp"
-#include "../Graph/BellmanFordGraph.hpp"
+#include "WeightedGraph.hpp"
+#include "BellmanFordGraph.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
 
@@ -23,7 +23,7 @@ TEST(BFTest, SimpleCorrectness) {
   g.addEdge(5, 4, -2);
   g.addEdge(2, 5, 2);
 
-  auto SP = Acamol::Graph::bellman_ford(g, 0);
+  auto SP = bellman_ford(g, 0);
   auto graph = SP.first;
   auto distances = SP.second;
   ASSERT_EQ(5, graph.getNumOfEdges());
@@ -48,7 +48,7 @@ TEST(BFTest, SimpleCorrectness2) {
   g.addEdge(3, 2, 5);
   g.addEdge(4, 3, -3);
 
-  auto SP = Acamol::Graph::bellman_ford(g, 0);
+  auto SP = bellman_ford(g, 0);
   auto graph = SP.first;
   auto distances = SP.second;
   ASSERT_EQ(4, graph.getNumOfEdges());
@@ -83,7 +83,7 @@ TEST(BellmanFord_TDD, ExampleFromWiki) {
   g.addEdge(6, 3, 2);
   g.addEdge(6, 5, 9);
 
-  auto SP = Acamol::Graph::bellman_ford(g, 1);
+  auto SP = bellman_ford(g, 1);
   auto graph = SP.first;
   auto distances = SP.second;
   ASSERT_EQ(5, graph.getNumOfEdges());
@@ -113,7 +113,7 @@ TEST(BFTest, DetectNegativeCycle) {
   g.addEdge(7, 8, 2);
   g.addEdge(8, 5, -2);
 
-  auto SP = Acamol::Graph::bellman_ford(g, 1);
+  auto SP = bellman_ford(g, 1);
   auto graph = SP.first;
 
   ASSERT_EQ(0, graph.getNumOfEdges());

@@ -1,8 +1,9 @@
 ﻿#include <gtest/gtest.h>
-#include <string>
-#include "../Greedy Algorithms/HuffmanCoding.hpp"
 
-using namespace Acamol::Greedy;
+#include <string>
+#include "HuffmanCoding.hpp"
+
+using namespace Acamol;
 
 namespace {
 TEST(HuffmanCoding, JFKSpeech) {

@@ -30,7 +30,7 @@
 #include <vector>
 #include <algorithm>
 
-namespace Acamol { namespace Greedy {
+namespace Acamol {
 
 // The actual algorithm implementation.
 //
@@ -49,11 +49,11 @@ namespace Acamol { namespace Greedy {
 //    
 // Since O(|E|)=O(|V|^2), overall we get O(|E|log|E|).
 template<class T>
-Acamol::DataStructures::WeightedGraph<T> min_spanning_tree(const Acamol::DataStructures::WeightedGraph<T>& graph) {
-  Acamol::DataStructures::WeightedGraph<T> tree;
+WeightedGraph<T> min_spanning_tree(const WeightedGraph<T>& graph) {
+  WeightedGraph<T> tree;
 
   // Creates |V| disjoint sets, with identifiers from 0 to |V|-1.
-  Acamol::DataStructures::DisjointSet sets(graph.getNumOfVertices());
+  DisjointSet sets(graph.getNumOfVertices());
 
   // map from vertex identifier to set identifier
   std::unordered_map<int, int> vertexToSet;
@@ -65,7 +65,7 @@ Acamol::DataStructures::WeightedGraph<T> min_spanning_tree(const Acamol::DataStr
     vertexToSet[it->second.getName()] = i;
   }
 
-  std::vector<Edge> edgesCopy(graph.getEdges().begin(), graph.getEdges().end());
+  std::vector<internal::Edge> edgesCopy(graph.getEdges().begin(), graph.getEdges().end());
   std::sort(edgesCopy.begin(), edgesCopy.end());
 
   // insert all vertices to the future tree. no edges at the moment.
@@ -75,7 +75,7 @@ Acamol::DataStructures::WeightedGraph<T> min_spanning_tree(const Acamol::DataStr
 
   // it is not a tree as long as |E| < |V| - 1
   while (tree.getNumOfEdges() < tree.getNumOfVertices() - 1 && !edgesCopy.empty()) {
-    Edge& e = edgesCopy.back();
+    internal::Edge& e = edgesCopy.back();
     int setFrom = sets.find(vertexToSet[e.from]);
     int setTo = sets.find(vertexToSet[e.to]);
 
@@ -99,6 +99,6 @@ Acamol::DataStructures::WeightedGraph<T> min_spanning_tree(const Acamol::DataStr
   return tree;
 }
 
-} }
+}  // namespace
 
 #endif // !__MIN_SPANNING_TREE_HPP__

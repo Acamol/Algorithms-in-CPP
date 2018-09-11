@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "../Data Structures/Heap.hpp"
+#include "Heap.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
    

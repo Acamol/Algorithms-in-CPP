@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "../Data Structures/WeightedGraph.hpp"
-#include "../Graph/DijkstraGraph.hpp"
+#include "WeightedGraph.hpp"
+#include "DijkstraGraph.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
  
@@ -28,7 +28,7 @@ protected:
 };
 
 TEST_F(SPTest, SimpleCorrectness) {
-  auto SP = Acamol::Graph::dijkstra(g, 0);
+  auto SP = dijkstra(g, 0);
   auto graph = SP.first;
   auto distances = SP.second;
   ASSERT_EQ(5, graph.getNumOfEdges());
@@ -63,7 +63,7 @@ TEST(SP_TDD, ExampleFromWiki) {
   g.addEdge(6, 3, 2);
   g.addEdge(6, 5, 9);
 
-  auto SP = Acamol::Graph::dijkstra(g, 1);
+  auto SP = dijkstra(g, 1);
   auto graph = SP.first;
   auto distances = SP.second;
   ASSERT_EQ(5, graph.getNumOfEdges());

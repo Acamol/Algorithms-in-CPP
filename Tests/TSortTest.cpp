@@ -1,9 +1,9 @@
 // Google Test headeres
 #include <gtest/gtest.h>
 
-#include "../Graph/TopologicalSortGraph.hpp"
+#include "TopologicalSortGraph.hpp"
 
-using namespace Acamol::DataStructures;
+using namespace Acamol;
 
 namespace {
 
@@ -74,29 +74,29 @@ class CyclicTest : public ::testing::Test {
 
 TEST(TSortBasicEdgeCases, EmptyGraph) {
   Graph<int> g;
-  auto l = Acamol::Graph::topological_sort(g);
+  auto l = topological_sort(g);
   ASSERT_EQ(0, l.size());
 }
 
 TEST(TSortBasicEdgeCases, OneElementOnly) {
   Graph<int> g;
   g.addVertex(0, 0);
-  auto l = Acamol::Graph::topological_sort(g);
+  auto l = topological_sort(g);
   ASSERT_EQ(1, l.size());
 }
 
 TEST_F(CyclicTest, CyclicGraph) {
-  auto l = Acamol::Graph::topological_sort(g);
+  auto l = topological_sort(g);
   ASSERT_EQ(0, l.size());
 
   // no longer cyclic
   g.removeEdge(4, 0);
-  l = Acamol::Graph::topological_sort(g);
+  l = topological_sort(g);
   ASSERT_EQ(6, l.size());
 }
 
 TEST_F(DAGTest, TSortSimple) {
-  std::list<Vertex<int>> l = Acamol::Graph::topological_sort(g);
+  std::list<Vertex<int>> l = topological_sort(g);
 
   ASSERT_EQ(6, l.size());
   int order[6];
@@ -117,7 +117,7 @@ TEST_F(DAGTest, TSortSimple) {
 }
 
 TEST_F(DAGFromWikiTest, TSortStillSimple) {
-  auto l = Acamol::Graph::topological_sort(g);
+  auto l = topological_sort(g);
 
   ASSERT_EQ(8, l.size());
   int order[12];

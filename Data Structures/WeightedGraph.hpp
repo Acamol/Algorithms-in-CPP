@@ -7,7 +7,9 @@
 #include <unordered_map>
 #include <functional> // hash specialization
 
-namespace Acamol { namespace DataStructures {
+namespace Acamol {
+
+namespace internal {
 
 class Edge {
 public:
@@ -27,14 +29,16 @@ public:
   friend bool operator<(const Edge& e1, const Edge& e2) {
     return e1.weight > e2.weight;
   }
+
 };
 
-} }
+} }  // namespace
+
 // injecting hash specialization to std to enable hasing edges and heap nodes.
 namespace std {
   template<>
-  struct hash<Acamol::DataStructures::Edge> {
-    std::size_t operator()(const Acamol::DataStructures::Edge& e) const {
+  struct hash<Acamol::internal::Edge> {
+    std::size_t operator()(const Acamol::internal::Edge& e) const {
       std::size_t h1 = std::hash<int>()(e.from);
       std::size_t h2 = std::hash<int>()(e.to);
 
@@ -43,7 +47,7 @@ namespace std {
   };
 }
 
-namespace Acamol { namespace DataStructures {
+namespace Acamol { 
 
 template<class T>
 class WeightedGraph : public Graph<T> {
@@ -60,7 +64,7 @@ class WeightedGraph : public Graph<T> {
   bool removeEdge(int from, int to) {
     bool result = Graph<T>::removeEdge(from, to);
     if (result) {
-      edges.erase(Edge(from, to));
+      edges.erase(internal::Edge(from, to));
     }
 
     return result;
@@ -72,8 +76,8 @@ class WeightedGraph : public Graph<T> {
   }
 
   double getWeight(int from, int to) const {
-    if (edges.find(Edge(from, to)) != edges.end()) {
-      return edges.find(Edge(from, to))->weight;
+    if (edges.find(internal::Edge(from, to)) != edges.end()) {
+      return edges.find(internal::Edge(from, to))->weight;
     }
 
     throw std::out_of_range("WeightedGraph: edge from vertex " 
@@ -91,22 +95,22 @@ class WeightedGraph : public Graph<T> {
   }
 
   bool setWeight(int from, int to, double weight) {
-    if (edges.find(Edge(from, to) != edges.end())) {
-      edges.find(Edge(from, to))->weight = weight;
+    if (edges.find(internal::Edge(from, to)) != edges.end()) {
+      edges.find(internal::Edge(from, to))->weight = weight;
       return true;
     }
 
     return false;
   }
 
-  const std::unordered_set<Edge>& getEdges() const {
+  const std::unordered_set<internal::Edge>& getEdges() const {
     return edges;
   }
 
  private:
-  std::unordered_set<Edge> edges;
+  std::unordered_set<internal::Edge> edges;
 };
 
-} } // namespace
+}  // namespace
 
 #endif // !__WEIGHTEDGRAPH_HPP__
