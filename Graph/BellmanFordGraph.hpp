@@ -3,7 +3,7 @@
   https://en.wikipedia.org/wiki/Shortest_path_problem
 
   And Bellman-Ford algorithm:
-  https://en.wikipedia.org/wiki/Bellman–Ford_algorithm
+  https://en.wikipedia.org/wiki/Bellmanâ€“Ford_algorithm
 
   Bellman-Ford algorithm is essentially an example of dynamic programming.
   It can be shown that after the i-th "round" all shortest paths with i edges
