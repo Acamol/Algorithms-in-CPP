@@ -55,7 +55,7 @@ class Heap {
   void pop() {
     using std::swap; // enable ADL
 
-    if (heap.size() < 0) {
+    if (heap.size() <= 0) {
       throw std::out_of_range("Heap::pop: empty heap.\n");
     }
     
@@ -65,7 +65,7 @@ class Heap {
   }
 
   Key& top() {
-    if (heap.size() == 0) {
+    if (heap.size() <= 0) {
       throw std::out_of_range("Heap::top: empty heap.\n");
     }
 

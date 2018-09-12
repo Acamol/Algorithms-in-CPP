@@ -67,6 +67,7 @@ set(HEADERS
         "Sorting/heap_sort.hpp"
         "Sorting/insertion_sort.hpp"
         "Sorting/merge_sort.hpp"
+        "Sorting/nth_element.hpp"
         "Sorting/quick_sort.hpp")
         
 set(SOURCES
@@ -86,6 +87,7 @@ set(TESTFILES
         Tests/HuffmanCodeTest.cpp
         Tests/KnapsackTest.cpp
         Tests/MergesortTest.cpp
+        Tests/NthElementTest.cpp
         Tests/MSTTest.cpp
         Tests/QuicksortTest.cpp
         Tests/TSortTest.cpp)

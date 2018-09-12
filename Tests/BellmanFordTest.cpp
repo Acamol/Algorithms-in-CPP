@@ -8,6 +8,16 @@ using namespace Acamol;
 
 namespace {
 
+TEST(BFTest, empty_graph) {
+  WeightedGraph<int> g;
+  auto SP = bellman_ford(g, 0);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_TRUE(graph.getEdges().empty());
+  ASSERT_TRUE(graph.getVertices().empty());
+  ASSERT_TRUE(distances.empty());
+}
+
 TEST(BFTest, SimpleCorrectness) {
   WeightedGraph<int> g;
   for (int i = 0; i <= 5; ++i) {
