@@ -59,6 +59,10 @@ HuffmanCodeEncoder::HuffmanCodeEncoder(const std::string& sample)
   generateEncoded(sample);
 }
 
+HuffmanCodeEncoder::~HuffmanCodeEncoder() {
+  delete root;
+}
+
 std::vector<unsigned int> HuffmanCodeEncoder::getFrequencies() {
   return frequencies;
 }

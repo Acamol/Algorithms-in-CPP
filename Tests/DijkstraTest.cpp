@@ -40,6 +40,14 @@ TEST_F(SPTest, SimpleCorrectness) {
 
 TEST(SP_TDD, ExampleFromWiki) {
   WeightedGraph<int> g;
+
+  auto SP = dijkstra(g, 1);
+  auto graph = SP.first;
+  auto distances = SP.second;
+  ASSERT_TRUE(graph.getEdges().empty());
+  ASSERT_TRUE(graph.getVertices().empty());
+  ASSERT_TRUE(distances.empty());
+
   for (int i = 1; i <= 6; ++i) {
     g.addVertex(i, i);
   }
@@ -63,9 +71,9 @@ TEST(SP_TDD, ExampleFromWiki) {
   g.addEdge(6, 3, 2);
   g.addEdge(6, 5, 9);
 
-  auto SP = dijkstra(g, 1);
-  auto graph = SP.first;
-  auto distances = SP.second;
+  SP = dijkstra(g, 1);
+  graph = SP.first;
+  distances = SP.second;
   ASSERT_EQ(5, graph.getNumOfEdges());
   double dist[] = { 0, 7 ,9 ,20, 20, 11 };
   for (int i = 1; i <= 6; ++i) {

@@ -67,7 +67,8 @@ set(HEADERS
         "Sorting/heap_sort.hpp"
         "Sorting/insertion_sort.hpp"
         "Sorting/merge_sort.hpp"
-        "Sorting/quick_sort.hpp")
+        "Sorting/quick_sort.hpp"
+        "Sorting/nth_element.hpp)
         
 set(SOURCES
         "Data\ Structures/DisjointSet.cpp"
@@ -87,6 +88,7 @@ set(TESTFILES
         Tests/KnapsackTest.cpp
         Tests/MergesortTest.cpp
         Tests/MSTTest.cpp
+        Tests/NthElementTest.cpp
         Tests/QuicksortTest.cpp
         Tests/TSortTest.cpp)
         

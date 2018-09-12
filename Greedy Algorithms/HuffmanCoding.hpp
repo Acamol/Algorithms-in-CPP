@@ -63,6 +63,8 @@ class HuffmanCodeEncoder {
  public:
   explicit HuffmanCodeEncoder(const std::string& sample);
 
+  ~HuffmanCodeEncoder();
+  
   // Returns an histogram of all chars by their frequencies.
   std::vector<unsigned int> getFrequencies();
 

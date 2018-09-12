@@ -6,9 +6,14 @@ using namespace Acamol;
 
 namespace {
    
+TEST(HeapCorrectness, top_n_pop_empty_heap) {
+  Heap<int> empty_heap;
+  ASSERT_THROW(empty_heap.top(), std::out_of_range);
+  ASSERT_THROW(empty_heap.pop(), std::out_of_range);
+}
+
 TEST(HeapCorrectness, heapify) {
   Heap<int> heap({ 5, 1, 3, 0, 2 });
-  
 }
 
 TEST(HeapCorrectness, push) {
