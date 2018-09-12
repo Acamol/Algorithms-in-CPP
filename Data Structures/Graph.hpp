@@ -89,7 +89,7 @@ class Graph {
  public:
   typedef std::unordered_map<int, Vertex<T>> vMap;
 
-  explicit Graph() : numEdges(0), vertices() {
+  explicit Graph() : vertices(), numEdges(0) {
   }
 
   /*
