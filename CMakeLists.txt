@@ -87,8 +87,8 @@ set(TESTFILES
         Tests/HuffmanCodeTest.cpp
         Tests/KnapsackTest.cpp
         Tests/MergesortTest.cpp
-        Tests/MSTTest.cpp
         Tests/NthElementTest.cpp
+        Tests/MSTTest.cpp
         Tests/QuicksortTest.cpp
         Tests/TSortTest.cpp)
         
